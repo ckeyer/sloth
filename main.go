@@ -2,16 +2,37 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 
-	"github.com/ckeyer/go-sh/buffer"
+	libapp "github.com/ckeyer/go-ci/app"
+	"github.com/ckeyer/go-ci/types"
 )
 
+var (
+	app *libapp.App
+)
+
+func init() {
+	args := os.Args[1:]
+	if len(args) <= 0 {
+		log.Fatalln("no args...")
+	}
+	var err error
+	app, err = libapp.NewApp(args)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(app)
+}
+
 func main() {
+
+	return
 	cmd := exec.Command("sh", "test.sh")
 
-	buf := buffer.NewBuf()
+	buf := types.NewBuf()
 	buf.SyncRead = true
 
 	cmd.Stderr = os.Stderr

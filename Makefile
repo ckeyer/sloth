@@ -1,4 +1,4 @@
-PKG := github.com/ckeyer/go-sh
+PKG := github.com/ckeyer/go-ci
 APP := website
 GODEP := godep
 GO :=  go 
