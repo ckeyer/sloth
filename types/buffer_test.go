@@ -46,7 +46,7 @@ func (b *BufferSuite) TestIO(c *check.C) {
 }
 
 func (b *BufferSuite) TestCMD(c *check.C) {
-	cmd := exec.Command("sh", "test.sh")
+	cmd := exec.Command("sh", "date")
 	b.buf.Clear()
 	cmd.Stderr = b.buf
 	cmd.Stdout = b.buf

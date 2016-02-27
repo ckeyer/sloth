@@ -5,10 +5,16 @@
 *~
 \#*
 .\#*
+app
+go-ci
+server
+glide.lock
 
 # Folders
 _obj
 /bin
+/data
+/assets
 
 # Architecture specific extensions/prefixes
 *.[568vq]

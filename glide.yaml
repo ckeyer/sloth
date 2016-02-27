@@ -1,2 +1,12 @@
 package: github.com/ckeyer/go-ci
-import: []
+import:
+- package: github.com/Sirupsen/logrus
+- package: github.com/ckeyer/go-ci
+  subpackages:
+  - api
+  - version
+  - views
+- package: github.com/ckeyer/go-log
+- package: github.com/go-martini/martini
+- package: github.com/martini-contrib/cors
+- package: github.com/martini-contrib/render
