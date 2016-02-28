@@ -1,6 +1,6 @@
 PKG := github.com/ckeyer/go-ci
 APP := goci
-GO :=  go 
+GO :=  go
 VERSION := $(shell cat VERSION.txt)
 LD_FLAGS := -X $(PKG)/version.version=$(VERSION)
 
