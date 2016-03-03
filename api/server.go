@@ -59,7 +59,10 @@ func Serve(listenAddr string) {
 	}))
 	m.Use(requestContext())
 
-	m.Group(API_PREFIX, APIRouter())
+	m.Group(API_PREFIX, func(r martini.Router) {
+		r.Get("/hello", Hello)
+		// r.NotFound(NotFound)
+	}, NotFound)
 
 	logger := logrus.StandardLogger()
 	server := &http.Server{

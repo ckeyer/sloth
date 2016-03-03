@@ -16,3 +16,7 @@ func APIRouter() routerHandle {
 func Hello(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
 	ctx.render.Text(http.StatusOK, "hello, "+ctx.req.RemoteAddr)
 }
+
+func NotFound(rw http.ResponseWriter, req *http.Request) {
+	rw.WriteHeader(http.StatusNotFound)
+}
