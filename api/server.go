@@ -17,6 +17,7 @@ import (
 
 const (
 	API_PREFIX = "/api"
+	WEB_HOOKS  = "/webhooks"
 )
 
 var (
@@ -46,8 +47,7 @@ func Serve(listenAddr string) {
 	m := NewMartini()
 	view := views.New()
 
-	m.NotFound(view.ServeHTTP)
-	m.Use(httpLogger)
+	m.NotFound(NotFound, view.ServeHTTP)
 
 	m.Use(cors.Allow(&cors.Options{
 		AllowOrigins:     strings.Split(headers["Access-Control-Allow-Origin"], ","),
@@ -57,12 +57,15 @@ func Serve(listenAddr string) {
 		AllowCredentials: true,
 		MaxAge:           time.Second * 864000,
 	}))
+	// m.Use(httpLogger)
 	m.Use(requestContext())
 
+	m.Group(WEB_HOOKS, func(r martini.Router) {
+		r.Post("/github", GithubWebhooks)
+	}, MWHello)
 	m.Group(API_PREFIX, func(r martini.Router) {
 		r.Get("/hello", Hello)
-		// r.NotFound(NotFound)
-	}, NotFound)
+	}, MWHello)
 
 	logger := logrus.StandardLogger()
 	server := &http.Server{
@@ -98,14 +101,12 @@ func requestContext() martini.Handler {
 		res.Header().Set("GOCI-Version", version.GetVersion())
 		res.Header().Set("X-Frame-Options", "SAMEORIGIN")
 		res.Header().Set("X-XSS-Protection", "1; mode=block")
-		// res.Header().Set("Content-Security-Policy", "default-src 'self' ckeyer.com 'unsafe-inline' 'unsafe-eval' data: ws://"+req.Host+" wss://"+req.Host)
-		if API_PREFIX != "" && !strings.HasPrefix(req.URL.Path, API_PREFIX) {
-			return
-		}
 
-		if strings.Contains(req.URL.Path, "/webhook") || strings.Contains(req.URL.Path, "/metadata") {
-			// Otherwise a persistent connection to mongodb will be created.
-			return
+		if API_PREFIX != "" || WEB_HOOKS != "" {
+			if !strings.HasPrefix(req.URL.Path, API_PREFIX) &&
+				!strings.HasPrefix(req.URL.Path, WEB_HOOKS) {
+				return
+			}
 		}
 
 		res.Header().Set("Cache-Control", "no-cache")
