@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/ckeyer/go-ci/lib"
 	"github.com/ckeyer/go-ci/version"
 	"github.com/ckeyer/go-ci/views"
-	logpkg "github.com/ckeyer/go-log"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"
 	"github.com/martini-contrib/render"
@@ -21,7 +21,7 @@ const (
 )
 
 var (
-	log     = logpkg.GetDefaultLogger("go-ci")
+	log     = lib.GetLogger()
 	headers map[string]string
 )
 
