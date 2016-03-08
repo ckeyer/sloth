@@ -17,21 +17,18 @@ var (
 	password = ""
 )
 
-func init() {
+func init2() {
 	// mongodb initialization
 	db := lib.NewMdb(host, port, database, userName, password)
 	db.Insert("gogogo", bson.M{"name": "wang"})
 
 	// redis initialization
-	_, err := lib.NewClient("127.0.0.1", "6379")
-	if err != nil {
-		log.Fatal(err)
-	}
+	lib.InitRedis("127.0.0.1", "6379")
 }
 
 func main() {
-	api.SetStatus()
-	return
+	// api.SetStatus()
+	// return
 	log.Notice("server is running...")
 	api.Serve(":8080")
 }

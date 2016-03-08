@@ -8,11 +8,13 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/ckeyer/go-ci/lib"
+	"github.com/ckeyer/go-ci/types"
 	"github.com/ckeyer/go-ci/version"
 	"github.com/ckeyer/go-ci/views"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"
 	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
 )
 
 const (
@@ -31,6 +33,7 @@ type RequestContext struct {
 	res    http.ResponseWriter
 	params martini.Params
 	mc     martini.Context
+	u      *types.User
 }
 
 func init() {
@@ -58,13 +61,16 @@ func Serve(listenAddr string) {
 		MaxAge:           time.Second * 864000,
 	}))
 	// m.Use(httpLogger)
+	m.Use(sessions.Sessions("kyt-api", lib.GetCookieStore()))
 	m.Use(requestContext())
 
 	m.Group(WEB_HOOKS, func(r martini.Router) {
-		r.Post("/github", GithubWebhooks)
+		r.Post("/github", WMAuthGithubServer, GithubWebhooks)
 	}, MWHello)
+
 	m.Group(API_PREFIX, func(r martini.Router) {
 		r.Get("/hello", Hello)
+		r.Post("/login", Login)
 	}, MWHello)
 
 	logger := logrus.StandardLogger()

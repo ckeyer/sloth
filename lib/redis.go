@@ -5,18 +5,32 @@ import (
 	"gopkg.in/redis.v3"
 )
 
-var redis_cli *redis.Client
+var (
+	redisOption *redis.Options
+	redisCli    *redis.Client
+)
 
-func NewClient(host, port string) (client *redis.Client, err error) {
+func InitRedis(host, port string) {
 	addr := fmt.Sprintf("%s:%s", host, port)
-	opt := &redis.Options{Addr: addr}
+	redisOption = &redis.Options{
+		Network: "tcp",
+		Addr:    addr,
+	}
+	_, err := NewClient(redisOption)
+	if err != nil {
+		log.Fatal("redis init error, ", err)
+		return
+	}
+}
+
+func NewClient(opt *redis.Options) (client *redis.Client, err error) {
 	client = redis.NewClient(opt)
 
 	ping := client.Ping()
 	if ping.Err() != nil {
-		err = fmt.Errorf("faild to connect to  redis(%s), reason:%v", addr, ping.Err())
+		err = fmt.Errorf("faild to connect to  redis(%s), reason:%v", opt.Addr, ping.Err())
 		return
 	}
-	redis_cli = client
+	redisCli = client
 	return
 }

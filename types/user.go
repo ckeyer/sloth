@@ -15,6 +15,11 @@ type GithubAccount struct {
 	Token    string `bson:"token"`
 }
 
+type WebhookConfig struct {
+	RepoName string `bson:""`
+	Secret   string `bson:"secret"`
+}
+
 func (g *GithubAccount) GetToken() string {
 	if g.Token != "" {
 		return g.Token
