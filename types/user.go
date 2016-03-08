@@ -5,6 +5,7 @@ type User struct {
 	Name          string         `bson:"name"`
 	Email         string         `bson:"email"`
 	Password      string         `bson:"password"`
+	Role          string         `bson:"role"` // admin member
 	GithubAccount *GithubAccount `bson:"github"`
 }
 

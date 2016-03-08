@@ -27,15 +27,6 @@ var (
 	headers map[string]string
 )
 
-type RequestContext struct {
-	req    *http.Request
-	render render.Render
-	res    http.ResponseWriter
-	params martini.Params
-	mc     martini.Context
-	u      *types.User
-}
-
 func init() {
 	headers = make(map[string]string)
 	headers["Access-Control-Allow-Origin"] = "*"
@@ -100,35 +91,4 @@ func httpLogger(rw http.ResponseWriter, req *http.Request, c martini.Context) {
 	log.Infof(" %s %s", req.URL.Path, req.URL.Query())
 	c.Next()
 	log.Infof("%s", "that is gone")
-}
-
-func requestContext() martini.Handler {
-	return func(c martini.Context, res http.ResponseWriter, req *http.Request, rnd render.Render) {
-		res.Header().Set("GOCI-Version", version.GetVersion())
-		res.Header().Set("X-Frame-Options", "SAMEORIGIN")
-		res.Header().Set("X-XSS-Protection", "1; mode=block")
-
-		if API_PREFIX != "" || WEB_HOOKS != "" {
-			if !strings.HasPrefix(req.URL.Path, API_PREFIX) &&
-				!strings.HasPrefix(req.URL.Path, WEB_HOOKS) {
-				return
-			}
-		}
-
-		res.Header().Set("Cache-Control", "no-cache")
-		ctx := &RequestContext{
-			req:    req,
-			res:    res,
-			render: rnd,
-			params: make(map[string]string),
-		}
-		c.Map(ctx)
-
-		req.ParseForm()
-		if len(req.Form) > 0 {
-			for k, v := range req.Form {
-				ctx.params[k] = v[0]
-			}
-		}
-	}
 }
