@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/ckeyer/go-ci/github"
+	"github.com/ckeyer/go-ci/git"
 	// libgithub "github.com/google/go-github/github"
 )
 
@@ -14,5 +14,5 @@ func GithubWebhooks(rw http.ResponseWriter, req *http.Request, ctx *RequestConte
 		return
 	}
 
-	github.GetEvent(evt, req.Body)
+	git.GetEvent(evt, req.Body)
 }
