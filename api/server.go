@@ -8,8 +8,6 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/ckeyer/go-ci/lib"
-	"github.com/ckeyer/go-ci/types"
-	"github.com/ckeyer/go-ci/version"
 	"github.com/ckeyer/go-ci/views"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"

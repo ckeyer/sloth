@@ -5,6 +5,9 @@ import (
 	"github.com/ckeyer/go-ci/lib"
 	_ "github.com/ckeyer/go-ci/types"
 	"gopkg.in/mgo.v2/bson"
+
+	_ "github.com/fsouza/go-dockerclient"
+	_ "gopkg.in/check.v1"
 )
 
 var (
