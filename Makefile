@@ -14,5 +14,5 @@ test:
 	mkdir -p /tmp/go-ci/src/$(PKG)
 	cp -a $(shell pwd)/* /tmp/go-ci/src/$(PKG)
 	cd /tmp/go-ci/src/$(PKG)
-	GOPATH=/tmp/go-ci $(GO) test -ldflags="$(LD_FLAGS)" ./...
+	$(GO) test -ldflags="$(LD_FLAGS)" ./...
 	rm -rf /tmp/go-ci/src/$(PKG)
