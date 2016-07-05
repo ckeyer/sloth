@@ -1,13 +1,15 @@
 package job
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"sync"
+	"time"
 )
 
 type JobManage struct {
 	sync.Mutex
-	Jobs map[int]Job
+	Jobs map[string]Job
 }
 
 func (jm *JobManage) Add(job Job) string {

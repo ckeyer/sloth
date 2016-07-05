@@ -9,7 +9,7 @@ import (
 )
 
 type ShellJob struct {
-	ID  int
+	ID  string
 	Cmd *exec.Cmd
 	out *bytes.Buffer
 }
@@ -28,10 +28,11 @@ func (s *ShellJob) GetID() string {
 }
 
 func (s *ShellJob) Run() error {
-	out, err := s.Cmd.CombinedOutput()
+	_, err := s.Cmd.CombinedOutput()
 	if err != nil {
-		return error
+		return err
 	}
+	return nil
 }
 
 func (s *ShellJob) Kill() {
@@ -39,5 +40,5 @@ func (s *ShellJob) Kill() {
 }
 
 func (s *ShellJob) GetStatus() *Status {
-
+	return nil
 }
