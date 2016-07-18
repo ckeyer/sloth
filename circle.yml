@@ -1,8 +1,8 @@
 dependencies:
   override:
-    - go get github.com/ckeyer/go-ci
 
 test:
   override:
+    - go get github.com/ckeyer/go-ci
     - cd $GOPATH/src/github.com/ckeyer/go-ci
     - make test
