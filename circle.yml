@@ -1,5 +1,6 @@
 dependencies:
   override:
+    - ls
 
 test:
   override:
