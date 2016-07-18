@@ -1,6 +1,8 @@
 dependencies:
   override:
-    - make build 
+    - go get github.com/ckeyer/go-ci
+
 test:
   override:
+    - cd $GOPATH/src/github.com/ckeyer/go-ci
     - make test
