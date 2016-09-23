@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/ckeyer/go-ci/types"
+	"github.com/ckeyer/sloth/types"
 	"net/http"
 )
 

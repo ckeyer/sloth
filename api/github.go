@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/ckeyer/go-ci/git"
+	"github.com/ckeyer/sloth/git"
 	// libgithub "github.com/google/go-github/github"
 )
 

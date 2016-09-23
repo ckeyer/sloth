@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ckeyer/go-ci/types"
-	"github.com/ckeyer/go-ci/version"
+	"github.com/ckeyer/sloth/types"
+	"github.com/ckeyer/sloth/version"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"

@@ -1,13 +1,13 @@
-PKG := github.com/ckeyer/go-ci
-APP := goci
-GO := go
+PWD := $(shell pwd)
+PKG := github.com/ckeyer/sloth
+APP := sloth
+DEV_IMAGE := ckeyer/dev
+
 VERSION := $(shell cat VERSION.txt)
-LD_FLAGS := -X $(PKG)/version.version=$(VERSION)
+GIT_COMMIT := $(shell git rev-parse --short HEAD)
+GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
-default: build
+LD_FLAGS := -X $(PKG)/version.version=$(VERSION) -X $(PKG)/version.gitCommit=$(GIT_COMMIT) -w
 
-build: 
-	CGO_ENABLED=0 GOOS=linux $(GO) build -a -installsuffix nocgo -ldflags="$(LD_FLAGS)" -o bin/$(APP)
-
-test: 
-	$(GO) test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v vendor)
+local:
+	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go

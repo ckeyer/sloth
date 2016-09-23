@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/ckeyer/go-ci/lib"
-	"github.com/ckeyer/go-ci/views"
+	"github.com/ckeyer/sloth/lib"
+	"github.com/ckeyer/sloth/views"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"
 	"github.com/martini-contrib/render"
@@ -49,7 +49,7 @@ func Serve(listenAddr string) {
 		AllowCredentials: true,
 		MaxAge:           time.Second * 864000,
 	}))
-	// m.Use(httpLogger)
+
 	m.Use(sessions.Sessions("kyt-api", lib.GetCookieStore()))
 	m.Use(requestContext())
 
@@ -85,8 +85,6 @@ func NewMartini() *martini.ClassicMartini {
 	return &martini.ClassicMartini{Martini: m, Router: r}
 }
 
-func httpLogger(rw http.ResponseWriter, req *http.Request, c martini.Context) {
-	log.Infof(" %s %s", req.URL.Path, req.URL.Query())
-	c.Next()
-	log.Infof("%s", "that is gone")
+func router() {
+
 }

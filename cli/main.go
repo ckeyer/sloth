@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/ckeyer/go-ci/api"
-	"github.com/ckeyer/go-ci/lib"
-	_ "github.com/ckeyer/go-ci/types"
+	"github.com/ckeyer/sloth/api"
+	"github.com/ckeyer/sloth/lib"
+	_ "github.com/ckeyer/sloth/types"
 	"gopkg.in/mgo.v2/bson"
 
 	_ "github.com/fsouza/go-dockerclient"
