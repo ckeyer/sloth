@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/ckeyer/sloth/lib"
+	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/utils"
 	"github.com/ckeyer/sloth/views"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"
@@ -20,21 +20,6 @@ const (
 	WEB_HOOKS  = "/webhooks"
 )
 
-var (
-	log     = lib.GetLogger()
-	headers map[string]string
-)
-
-func init() {
-	headers = make(map[string]string)
-	headers["Access-Control-Allow-Origin"] = "*"
-	headers["Access-Control-Allow-Methods"] = "GET,OPTIONS,POST,DELETE"
-	headers["Access-Control-Allow-Credentials"] = "true"
-	headers["Access-Control-Max-Age"] = "864000"
-	headers["Access-Control-Expose-Headers"] = "Record-Count,Limt,Offset,Content-Type"
-	headers["Access-Control-Allow-Headers"] = "Limt,Offset,Content-Type,Origin,Accept,Authorization"
-}
-
 func Serve(listenAddr string) {
 	m := NewMartini()
 	view := views.New()
@@ -42,15 +27,15 @@ func Serve(listenAddr string) {
 	m.NotFound(NotFound, view.ServeHTTP)
 
 	m.Use(cors.Allow(&cors.Options{
-		AllowOrigins:     strings.Split(headers["Access-Control-Allow-Origin"], ","),
-		AllowMethods:     strings.Split(headers["Access-Control-Allow-Methods"], ","),
-		AllowHeaders:     strings.Split(headers["Access-Control-Allow-Headers"], ","),
-		ExposeHeaders:    strings.Split(headers["Access-Control-Expose-Headers"], ","),
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "OPTIONS", "POST", "DELETE"},
+		AllowHeaders:     []string{"Limt,Offset,Content-Type,Origin,Accept,Authorization"},
+		ExposeHeaders:    []string{"Record-Count", "Limt", "Offset", "Content-Type"},
 		AllowCredentials: true,
 		MaxAge:           time.Second * 864000,
 	}))
 
-	m.Use(sessions.Sessions("kyt-api", lib.GetCookieStore()))
+	m.Use(sessions.Sessions("sloth", lib.GetCookieStore()))
 	m.Use(requestContext())
 
 	m.Group(WEB_HOOKS, func(r martini.Router) {
@@ -83,8 +68,4 @@ func NewMartini() *martini.ClassicMartini {
 	m.MapTo(r, (*martini.Routes)(nil))
 	m.Action(r.Handle)
 	return &martini.ClassicMartini{Martini: m, Router: r}
-}
-
-func router() {
-
 }

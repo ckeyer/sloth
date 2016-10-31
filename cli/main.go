@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/ckeyer/sloth/api"
-	"github.com/ckeyer/sloth/lib"
 	_ "github.com/ckeyer/sloth/types"
+	"github.com/ckeyer/sloth/utils"
 	"gopkg.in/mgo.v2/bson"
 
 	_ "github.com/fsouza/go-dockerclient"

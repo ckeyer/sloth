@@ -2,8 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/ckeyer/sloth/types"
 	"net/http"
+
+	"github.com/ckeyer/sloth/types"
 )
 
 func Login(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {

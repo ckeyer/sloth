@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 func MWHello(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {

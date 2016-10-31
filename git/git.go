@@ -1,7 +1,7 @@
 package git
 
 import (
-	"github.com/ckeyer/sloth/lib"
+	"github.com/ckeyer/sloth/utils"
 )
 
 var log = lib.GetLogger()

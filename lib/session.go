@@ -1,4 +1,4 @@
-package lib
+package utils
 
 import (
 	"github.com/martini-contrib/sessions"
@@ -7,7 +7,3 @@ import (
 func GetCookieStore() sessions.CookieStore {
 	return sessions.NewCookieStore([]byte("cZig4BdxWHdse"))
 }
-
-// func GetSession() sessions.Session {
-// 	return sessions.Sessions("kyt-api", GetCookieStore())
-// }
