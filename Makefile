@@ -11,3 +11,6 @@ LD_FLAGS := -X $(PKG)/version.version=$(VERSION) -X $(PKG)/version.gitCommit=$(G
 
 local:
 	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
+
+test:
+	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")

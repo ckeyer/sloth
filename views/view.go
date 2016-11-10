@@ -7,11 +7,7 @@ import (
 	"os"
 	"strings"
 
-	logpkg "github.com/ckeyer/go-log"
-)
-
-var (
-	log = logpkg.GetDefaultLogger("goci-view")
+	log "github.com/Sirupsen/logrus"
 )
 
 type Views struct {

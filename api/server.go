@@ -3,7 +3,6 @@ package api
 import (
 	stdlog "log"
 	"net/http"
-	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -35,7 +34,7 @@ func Serve(listenAddr string) {
 		MaxAge:           time.Second * 864000,
 	}))
 
-	m.Use(sessions.Sessions("sloth", lib.GetCookieStore()))
+	m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
 	m.Use(requestContext())
 
 	m.Group(WEB_HOOKS, func(r martini.Router) {
@@ -47,14 +46,14 @@ func Serve(listenAddr string) {
 		r.Post("/login", Login)
 	}, MWHello)
 
-	logger := logrus.StandardLogger()
+	logger := log.StandardLogger()
 	server := &http.Server{
 		Handler:  m,
 		Addr:     listenAddr,
 		ErrorLog: stdlog.New(logger.Writer(), "", 0),
 	}
 
-	log.Notice("server is starting on ", listenAddr)
+	log.Info("server is starting on ", listenAddr)
 	if err := server.ListenAndServe(); err != nil {
 		log.Error(err)
 	}

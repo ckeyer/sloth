@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/git"
-	// libgithub "github.com/google/go-github/github"
 )
 
 func GithubWebhooks(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {

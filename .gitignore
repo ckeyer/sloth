@@ -29,3 +29,4 @@ _cgo_export.*
 *.test
 *.prof
 bundles
+Godeps
