@@ -45,152 +45,152 @@ func NewMdbWithConf(c *Config) (mdb *Mdb) {
 	return
 }
 
-func (self *Mdb) connect() {
+func (m *Mdb) connect() {
 	// 连接url ： [mongodb:// ][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
-	url := self.Host
-	if self.UserName != "" && self.Password != "" {
-		url = self.UserName + ":" + self.Password + "@" + url
+	url := m.Host
+	if m.UserName != "" && m.Password != "" {
+		url = m.UserName + ":" + m.Password + "@" + url
 	}
-	if self.Port != "" {
-		url = url + ":" + self.Port
+	if m.Port != "" {
+		url = url + ":" + m.Port
 	}
-	if self.Database != "" {
-		url = url + "/" + self.Database
+	if m.Database != "" {
+		url = url + "/" + m.Database
 	}
 	var err error
-	self.baseSession, err = mgo.Dial(url)
+	m.baseSession, err = mgo.Dial(url)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (self *Mdb) Session() *mgo.Session {
-	return self.baseSession.New()
+func (m *Mdb) Session() *mgo.Session {
+	return m.baseSession.New()
 }
 
-func (self *Mdb) DB(s *mgo.Session) *mgo.Database {
-	return s.DB(self.Config.Database)
+func (m *Mdb) DB(s *mgo.Session) *mgo.Database {
+	return s.DB(m.Config.Database)
 }
 
-func (self *Mdb) WithC(collection string, job func(*mgo.Collection) error) error {
-	s := self.baseSession.New()
+func (m *Mdb) WithC(collection string, job func(*mgo.Collection) error) error {
+	s := m.baseSession.New()
 	defer s.Close()
-	return job(s.DB(self.Config.Database).C(collection))
+	return job(s.DB(m.Config.Database).C(collection))
 }
 
-func (self *Mdb) Upsert(collection string, selector interface{}, change interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Upsert(collection string, selector interface{}, change interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		_, err := c.Upsert(selector, change)
 		return err
 	})
 }
 
-func (self *Mdb) UpdateId(collection string, id interface{}, change interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) UpdateId(collection string, id interface{}, change interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.UpdateId(id, change)
 	})
 }
-func (self *Mdb) Update(collection string, selector, change interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Update(collection string, selector, change interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Update(selector, change)
 	})
 }
-func (self *Mdb) UpdateAll(collection string, selector, change interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) UpdateAll(collection string, selector, change interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		_, err := c.UpdateAll(selector, change)
 		return err
 	})
 }
 
-func (self *Mdb) Insert(collection string, data ...interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Insert(collection string, data ...interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Insert(data...)
 	})
 }
 
-func (self *Mdb) All(collection string, query interface{}, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) All(collection string, query interface{}, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(query).All(result)
 	})
 }
 
 // 返回所有复合 query 条件的item， 并且被 projection 限制返回的fields
-func (self *Mdb) AllSelect(collection string, query interface{}, projection interface{}, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) AllSelect(collection string, query interface{}, projection interface{}, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(query).Select(projection).All(result)
 	})
 }
 
-func (self *Mdb) One(collection string, query interface{}, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) One(collection string, query interface{}, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(query).One(result)
 	})
 }
 
-func (self *Mdb) OneSelect(collection string, query interface{}, projection interface{}, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) OneSelect(collection string, query interface{}, projection interface{}, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(query).Select(projection).One(result)
 	})
 }
 
-// 等效于: self.One(collection,bson.M{"_id":id},result)
-func (self *Mdb) FindId(collection string, id interface{}, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+// 等效于: m.One(collection,bson.M{"_id":id},result)
+func (m *Mdb) FindId(collection string, id interface{}, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(bson.M{"_id": id}).One(result)
 	})
 }
 
-func (self *Mdb) RemoveId(collection string, id interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) RemoveId(collection string, id interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		err := c.RemoveId(id)
 		return err
 	})
 }
-func (self *Mdb) Remove(collection string, selector interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Remove(collection string, selector interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		err := c.Remove(selector)
 		return err
 	})
 }
-func (self *Mdb) RemoveAll(collection string, selector interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) RemoveAll(collection string, selector interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		_, err := c.RemoveAll(selector)
 		return err
 	})
 }
 
-func (self *Mdb) CountId(collection string, id interface{}) (n int) {
-	self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) CountId(collection string, id interface{}) (n int) {
+	m.WithC(collection, func(c *mgo.Collection) error {
 		var err error
 		n, err = c.FindId(id).Count()
 		return err
 	})
 	return n
 }
-func (self *Mdb) Count(collection string, query interface{}) (n int) {
-	self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Count(collection string, query interface{}) (n int) {
+	m.WithC(collection, func(c *mgo.Collection) error {
 		var err error
 		n, err = c.Find(query).Count()
 		return err
 	})
 	return n
 }
-func (self *Mdb) Exist(collection string, query interface{}) bool {
-	return self.Count(collection, query) != 0
+func (m *Mdb) Exist(collection string, query interface{}) bool {
+	return m.Count(collection, query) != 0
 }
-func (self *Mdb) ExistId(collection string, id interface{}) bool {
-	return self.CountId(collection, id) != 0
+func (m *Mdb) ExistId(collection string, id interface{}) bool {
+	return m.CountId(collection, id) != 0
 }
 
-func (self *Mdb) Page(collection string, query bson.M, offset int, limit int, result interface{}) error {
-	return self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) Page(collection string, query bson.M, offset int, limit int, result interface{}) error {
+	return m.WithC(collection, func(c *mgo.Collection) error {
 		return c.Find(query).Skip(offset).Limit(limit).All(result)
 	})
 }
 
 // 获取页面数据和“所有”符合条件的记录“总共”的条数
-func (self *Mdb) PageAndCount(collection string, query bson.M, offset int, limit int, result interface{}) (total int, err error) {
-	err = self.WithC(collection, func(c *mgo.Collection) error {
+func (m *Mdb) PageAndCount(collection string, query bson.M, offset int, limit int, result interface{}) (total int, err error) {
+	err = m.WithC(collection, func(c *mgo.Collection) error {
 		total, err = c.Find(query).Count()
 		if err != nil {
 			return err
@@ -201,6 +201,6 @@ func (self *Mdb) PageAndCount(collection string, query bson.M, offset int, limit
 }
 
 // 等同与UpdateId(collection,id,bson.M{"$set":change})
-func (self *Mdb) SetId(collection string, id interface{}, change interface{}) error {
-	return self.UpdateId(collection, id, bson.M{"$set": change})
+func (m *Mdb) SetId(collection string, id interface{}, change interface{}) error {
+	return m.UpdateId(collection, id, bson.M{"$set": change})
 }
