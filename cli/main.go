@@ -39,7 +39,12 @@ func main() {
 		Name:    "sloth",
 		Version: version.GetVersion(),
 		Usage:   "",
-		Authors: []string("ckeyer"),
+		Authors: []*cli.Author{
+			&cli.Author{
+				Name:  "ckeyer",
+				Email: "me@ckeyer.com",
+			},
+		},
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:        "debug",
@@ -50,31 +55,31 @@ func main() {
 			},
 			&cli.StringFlag{
 				Name:        "addr",
-				Aliases:     "address",
-				EnvVars:     []string("ADDR"),
+				Aliases:     []string{"address"},
+				EnvVars:     []string{"ADDR"},
 				Value:       ":8080",
-				Destination: addr,
+				Destination: &addr,
 			},
 			&cli.StringFlag{
 				Name:        "redis_addr",
 				Aliases:     []string{"raddr"},
 				EnvVars:     []string{"REDIS_ADDR"},
 				Value:       "127.0.0.1:6379",
-				Destination: raddr,
+				Destination: &raddr,
 			},
 			&cli.StringFlag{
 				Name:        "redis_auth",
 				Aliases:     []string{"rauth"},
 				EnvVars:     []string{"REDIS_AUTH"},
 				Value:       "",
-				Destination: rauth,
+				Destination: &rauth,
 			},
 			&cli.StringFlag{
 				Name:        "ui_dir",
 				Aliases:     []string{"uiDir"},
 				EnvVars:     []string{"UI_DIR"},
 				Value:       "./assets",
-				Destination: uiDir,
+				Destination: &uiDir,
 			},
 		},
 		Before: func(ctx *cli.Context) error {
