@@ -31,7 +31,7 @@ dev:
 dev-ui:
 	docker run --rm -it \
 	 --name $(APP)-ui-dev \
-	 $(NET) \
-	 -v $(PWD):/opt/$(APP) \
-	 -w /opt/$(APP)/ui \
+	 -p 8080:8080 \
+	 -v $(PWD)/ui:/opt/$(APP) \
+	 -w /opt/$(APP) \
 	 $(DEV_UI_IMAGE) bash
