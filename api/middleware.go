@@ -7,14 +7,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/gin-gonic/gin"
 )
 
-func MWHello(rw http.ResponseWriter, req *http.Request) {
-	log.Debugf("hello %s:%s", req.Method, req.URL.Path)
-}
+func GinLogger(ctx *gin.Context) {
+	start := time.Now()
+	ctx.Next()
+	log.WithFields(log.Fields{
+		"Method": ctx.Request.Method,
+		"URL":    ctx.Request.URL.Path,
+		"Period": fmt.Sprintf("%.6f", time.Now().Sub(start).Seconds()),
+	}).Debug("bye jack.")
 
+}
 func WMAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {

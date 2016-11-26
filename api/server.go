@@ -37,12 +37,13 @@ func Serve(listenAddr string) {
 	// m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
 	gr.Use(requestContext())
 
-	gr.Group(WEB_HOOKS)
-	gr.POST("/git", GinH(WMAuthGithubServer), GinH(GithubWebhooks))
+	gr.Use(GinLogger)
 
-	// m.Group(WEB_HOOKS, func(r martini.Router) {
-	// 	r.Post("/github", WMAuthGithubServer, GithubWebhooks)
-	// }, MWHello)
+	// routers...
+	// /webhooks
+	WebhookRouter(gr.Group(WEB_HOOKS))
+	// /api
+	apiRouter(gr.Group(API_PREFIX))
 
 	logger := log.StandardLogger()
 	server := &http.Server{

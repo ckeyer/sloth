@@ -30,7 +30,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:        "debug",
-				Aliases:     []string{"d"},
+				Aliases:     []string{"D"},
 				EnvVars:     []string{"DEBUG"},
 				Value:       false,
 				Destination: &debug,
@@ -39,7 +39,7 @@ func main() {
 				Name:        "addr",
 				Aliases:     []string{"address"},
 				EnvVars:     []string{"ADDR"},
-				Value:       ":8080",
+				Value:       ":8000",
 				Destination: &addr,
 			},
 			&cli.StringFlag{
@@ -66,12 +66,12 @@ func main() {
 		},
 		Before: func(ctx *cli.Context) error {
 			/// init config model.
+			gin.SetMode(gin.ReleaseMode)
 			log.SetFormatter(&log.JSONFormatter{})
 			if debug {
-				gin.SetMode(gin.DebugMode)
 				log.SetLevel(log.DebugLevel)
+				log.Debug("server is running at debug model.")
 			} else {
-				gin.SetMode(gin.ReleaseMode)
 				log.SetLevel(log.InfoLevel)
 			}
 

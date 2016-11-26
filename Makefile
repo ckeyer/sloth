@@ -21,9 +21,13 @@ local:
 test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")
 
+run:
+	go run -a -ldflags="$(LD_FLAGS)" cli/main.go -D
+
 dev:
 	docker run --rm -it \
 	 --name $(APP)-dev \
+	 -p 8000:8000 \
 	 $(NET) \
 	 -v $(PWD):/opt/gopath/src/$(PKG) \
 	 -w /opt/gopath/src/$(PKG) \

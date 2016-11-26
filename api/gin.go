@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 )
 
@@ -58,6 +59,7 @@ func GinMessage(ctx *gin.Context, status int, msg ...interface{}) {
 	ret := map[string]interface{}{"message": ""}
 	if l >= 1 {
 		ret["message"] = fmt.Sprint(msg[0])
+		log.WithField("message", msg[0]).Debug("return message.")
 	}
 	if l >= 2 {
 		ret["supplement"] = msg[1:]
