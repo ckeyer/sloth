@@ -7,18 +7,18 @@ import (
 	"github.com/ckeyer/sloth/types"
 )
 
-func Login(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
+func Login(rw http.ResponseWriter, req *http.Request) {
 	u := new(types.User)
-	err := json.NewDecoder(req.Body).Decode(u)
-	if err != nil {
-		ctx.Error()
-	}
+	json.NewDecoder(req.Body).Decode(u)
+	// if err != nil {
+	// 	ctx.Error()
+	// }
 }
 
-func Logout(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
+func Logout(rw http.ResponseWriter, req *http.Request) {
 
 }
 
-func Registry(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
+func Registry(rw http.ResponseWriter, req *http.Request) {
 
 }

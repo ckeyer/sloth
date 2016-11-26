@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func Hello(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
-	ctx.render.Text(http.StatusOK, "hello fuck, "+ctx.req.RemoteAddr)
+func Hello(rw http.ResponseWriter, req *http.Request) {
+
 }
 
 func NotFound(rw http.ResponseWriter, req *http.Request) {

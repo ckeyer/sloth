@@ -7,8 +7,8 @@ import (
 	"github.com/ckeyer/sloth/git"
 )
 
-func GithubWebhooks(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
-	evt := ctx.req.Header.Get("X-GitHub-Event")
+func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
+	evt := req.Header.Get("X-GitHub-Event")
 	if evt == "" {
 		log.Warning("unknown event type from github's webhooks")
 		return

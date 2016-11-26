@@ -16,6 +16,7 @@ UI_NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet 
 
 local:
 	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
+	echo "build successful."
 
 test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")

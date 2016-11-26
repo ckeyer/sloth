@@ -8,6 +8,7 @@ import (
 	_ "github.com/ckeyer/sloth/types"
 	"github.com/ckeyer/sloth/version"
 	_ "github.com/fsouza/go-dockerclient"
+	"github.com/gin-gonic/gin"
 	_ "gopkg.in/check.v1"
 	"gopkg.in/urfave/cli.v2"
 )
@@ -64,11 +65,13 @@ func main() {
 			},
 		},
 		Before: func(ctx *cli.Context) error {
-			/// init config logger.
+			/// init config model.
 			log.SetFormatter(&log.JSONFormatter{})
 			if debug {
+				gin.SetMode(gin.DebugMode)
 				log.SetLevel(log.DebugLevel)
 			} else {
+				gin.SetMode(gin.ReleaseMode)
 				log.SetLevel(log.InfoLevel)
 			}
 

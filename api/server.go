@@ -1,17 +1,16 @@
 package api
 
 import (
+	"github.com/ckeyer/sloth/version"
+	"github.com/gin-gonic/gin"
 	stdlog "log"
 	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/ckeyer/sloth/utils"
 	"github.com/ckeyer/sloth/views"
-	"github.com/go-martini/martini"
 	"github.com/martini-contrib/cors"
-	"github.com/martini-contrib/render"
-	"github.com/martini-contrib/sessions"
 )
 
 const (
@@ -19,36 +18,35 @@ const (
 	WEB_HOOKS  = "/webhooks"
 )
 
+var headHandle = cors.Allow(&cors.Options{
+	AllowOrigins:     []string{"*"},
+	AllowMethods:     []string{"GET", "OPTIONS", "POST", "DELETE"},
+	AllowHeaders:     []string{"Limt,Offset,Content-Type,Origin,Accept,Authorization"},
+	ExposeHeaders:    []string{"Record-Count", "Limt", "Offset", "Content-Type"},
+	AllowCredentials: true,
+	MaxAge:           time.Second * 864000,
+})
+
 func Serve(listenAddr string) {
-	m := NewMartini()
-	view := views.New()
+	gr := NewGin()
 
-	m.NotFound(NotFound, view.ServeHTTP)
+	gr.NoRoute(GinH(views.New()))
 
-	m.Use(cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "OPTIONS", "POST", "DELETE"},
-		AllowHeaders:     []string{"Limt,Offset,Content-Type,Origin,Accept,Authorization"},
-		ExposeHeaders:    []string{"Record-Count", "Limt", "Offset", "Content-Type"},
-		AllowCredentials: true,
-		MaxAge:           time.Second * 864000,
-	}))
+	gr.Use(GinH(headHandle))
 
-	m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
-	m.Use(requestContext())
+	// m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
+	gr.Use(requestContext())
 
-	m.Group(WEB_HOOKS, func(r martini.Router) {
-		r.Post("/github", WMAuthGithubServer, GithubWebhooks)
-	}, MWHello)
+	gr.Group(WEB_HOOKS)
+	gr.POST("/git", GinH(WMAuthGithubServer), GinH(GithubWebhooks))
 
-	m.Group(API_PREFIX, func(r martini.Router) {
-		r.Get("/hello", Hello)
-		r.Post("/login", Login)
-	}, MWHello)
+	// m.Group(WEB_HOOKS, func(r martini.Router) {
+	// 	r.Post("/github", WMAuthGithubServer, GithubWebhooks)
+	// }, MWHello)
 
 	logger := log.StandardLogger()
 	server := &http.Server{
-		Handler:  m,
+		Handler:  gr,
 		Addr:     listenAddr,
 		ErrorLog: stdlog.New(logger.Writer(), "", 0),
 	}
@@ -59,12 +57,21 @@ func Serve(listenAddr string) {
 	}
 }
 
-func NewMartini() *martini.ClassicMartini {
-	r := martini.NewRouter()
-	m := martini.New()
-	m.Use(martini.Recovery())
-	m.Use(render.Renderer())
-	m.MapTo(r, (*martini.Routes)(nil))
-	m.Action(r.Handle)
-	return &martini.ClassicMartini{Martini: m, Router: r}
+func requestContext() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		res, req := ctx.Writer, ctx.Request
+
+		res.Header().Set("Sloth-Version", version.GetVersion())
+		res.Header().Set("X-XSS-Protection", "1; mode=block")
+
+		if API_PREFIX != "" || WEB_HOOKS != "" {
+			if !strings.HasPrefix(req.URL.Path, API_PREFIX) &&
+				!strings.HasPrefix(req.URL.Path, WEB_HOOKS) {
+				return
+			}
+		}
+		res.Header().Set("Cache-Control", "no-cache")
+
+		/// TODO: set & load session
+	}
 }

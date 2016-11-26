@@ -11,11 +11,11 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-func MWHello(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
-	log.Debugf("hello %s:%s", ctx.req.Method, ctx.req.URL.Path)
+func MWHello(rw http.ResponseWriter, req *http.Request) {
+	log.Debugf("hello %s:%s", req.Method, req.URL.Path)
 }
 
-func WMAuthGithubServer(rw http.ResponseWriter, req *http.Request, ctx *RequestContext) {
+func WMAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.Error("first read body error, ", err)

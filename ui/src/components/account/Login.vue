@@ -38,6 +38,7 @@ export default {
 }
 </script>
 
+ <!-- scoped -->
 <style lang="scss">
 @import '../../styles/vars.scss';
 
@@ -54,6 +55,7 @@ a {
 .animated {
   margin-right: auto;
   margin-left: auto;
+  margin-top: 10%;
   animation-fill-mode: initial;
 }
 .m-t {
