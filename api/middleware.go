@@ -11,6 +11,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 )
 
 func GinLogger(ctx *gin.Context) {
@@ -23,7 +24,32 @@ func GinLogger(ctx *gin.Context) {
 	}).Debug("bye jack.")
 
 }
-func WMAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
+
+func MWNeedLogin(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("X-Token")
+	if token == "" {
+		var err error
+		token, err = ctx.Cookie("UserToken")
+		if err != nil {
+			GinError(ctx, 401, "Not Found Header X-Token")
+			return
+		}
+	}
+	sv, ok := ctx.Get("ss")
+	if !ok {
+		GinError(ctx, 500, "Can Not found Session")
+		return
+	}
+
+	ss, ok := sv.(sessions.Session)
+	if !ok {
+		GinError(ctx, 500, fmt.Errorf("%T is not a session", sv))
+		return
+	}
+
+}
+
+func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.Error("first read body error, ", err)

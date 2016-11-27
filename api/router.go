@@ -32,7 +32,7 @@ func WebhookRouter(r *gin.RouterGroup) {
 
 func apiRouter(r *gin.RouterGroup) {
 	r.POST("/login", TODO)
-	r.POST("signup", TODO)
+	r.POST("/signup", TODO)
 
 	func(r *gin.RouterGroup) {
 		r.DELETE("/logout", TODO)

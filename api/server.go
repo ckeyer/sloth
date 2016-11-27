@@ -1,15 +1,16 @@
 package api
 
 import (
-	"github.com/ckeyer/sloth/version"
-	"github.com/gin-gonic/gin"
 	stdlog "log"
 	"net/http"
 	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/version"
 	"github.com/ckeyer/sloth/views"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/martini-contrib/cors"
 )
 
@@ -33,6 +34,8 @@ func Serve(listenAddr string) {
 	gr.NoRoute(GinH(views.New()))
 
 	gr.Use(GinH(headHandle))
+
+	store := sessions.NewFilesystemStore("/tmp/ck", []byte("ck-session"))
 
 	// m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
 	gr.Use(requestContext())
@@ -74,5 +77,6 @@ func requestContext() gin.HandlerFunc {
 		res.Header().Set("Cache-Control", "no-cache")
 
 		/// TODO: set & load session
+		ctx.Set("ss", store.Get(ctx.Request, "UserToken"))
 	}
 }
