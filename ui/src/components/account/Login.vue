@@ -27,8 +27,11 @@ export default {
     return {
       logo_name: 'Sloth',
       email: '',
-      password: ''
+      password: '',
+      hi: 'hi'
     }
+  },
+  computed: {
   },
   methods: {
     login: function () {
