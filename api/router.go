@@ -31,10 +31,15 @@ func WebhookRouter(r *gin.RouterGroup) {
 }
 
 func apiRouter(r *gin.RouterGroup) {
+	r.GET("/_ping", ping)
 	r.POST("/login", TODO)
 	r.POST("/signup", TODO)
 
 	func(r *gin.RouterGroup) {
 		r.DELETE("/logout", TODO)
 	}(r.Group("/user"))
+}
+
+func ping(ctx *gin.Context) {
+	GinMessage(ctx, 200, "hi")
 }

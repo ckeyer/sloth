@@ -14,6 +14,8 @@
           </div>
           <button type="submit" class="btn btn-primary" @click="login">登入</button>
           <router-link :to="{path:'/resetpassword'}"><small>找回密码</small></router-link>
+
+          <button type="submit" class="btn btn-primary" @click="ping">Ping</button>
         </div>
       </div>
     </div>
@@ -22,6 +24,7 @@
 
 <script>
 import {setAccount} from '../../vuex/actions'
+import api from '../../api/api'
 
 export default {
   name: 'login',
@@ -38,6 +41,12 @@ export default {
   methods: {
     login: function () {
       console.log('login.', this.email, this.password)
+    },
+    ping: function () {
+      api.ping().end(function (err, resp) {
+        console.log('err', err)
+        console.log('resp', resp)
+      })
     },
     none: function () {
       setAccount(this.$store)

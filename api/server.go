@@ -20,8 +20,9 @@ const (
 )
 
 var headHandle = cors.New(cors.Config{
-	AbortOnError:     false,
-	AllowAllOrigins:  true,
+	AbortOnError:    false,
+	AllowAllOrigins: true,
+	// AllowedOrigins:   []string{"*"},
 	AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 	AllowedHeaders:   []string{"Content-Type", "Limt", "Offset", "Origin", "Accept"},
 	ExposedHeaders:   []string{"Record-Count", "Limt", "Offset", "Content-Type"},
