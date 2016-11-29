@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import {setAccount} from '../../vuex/actions'
+
 export default {
   name: 'login',
   data () {
@@ -36,6 +38,9 @@ export default {
   methods: {
     login: function () {
       console.log('login.', this.email, this.password)
+    },
+    none: function () {
+      setAccount(this.$store)
     }
   }
 }
