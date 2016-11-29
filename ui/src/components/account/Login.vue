@@ -25,6 +25,7 @@
 <script>
 import {setAccount} from '../../vuex/actions'
 import api from '../../api/api'
+import Alert from '../../utils/alert'
 
 export default {
   name: 'login',
@@ -46,6 +47,7 @@ export default {
       api.ping().end(function (err, resp) {
         console.log('err', err)
         console.log('resp', resp)
+        Alert.success(resp.body.message)
       })
     },
     none: function () {

@@ -7,6 +7,7 @@ import App from './App'
 import 'font-awesome/css/font-awesome.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'vue-strap/dist/vue-strap'
+import 'toastr/package/build/toastr.min.css'
 
 const debug = process.env.NODE_ENV !== 'production'
 
