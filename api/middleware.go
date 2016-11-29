@@ -11,7 +11,6 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
 )
 
 func GinLogger(ctx *gin.Context) {
@@ -35,18 +34,6 @@ func MWNeedLogin(ctx *gin.Context) {
 			return
 		}
 	}
-	sv, ok := ctx.Get("ss")
-	if !ok {
-		GinError(ctx, 500, "Can Not found Session")
-		return
-	}
-
-	ss, ok := sv.(sessions.Session)
-	if !ok {
-		GinError(ctx, 500, fmt.Errorf("%T is not a session", sv))
-		return
-	}
-
 }
 
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {

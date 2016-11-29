@@ -9,9 +9,9 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/version"
 	"github.com/ckeyer/sloth/views"
+	"github.com/gin-gonic/contrib/cors"
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
-	"github.com/martini-contrib/cors"
 )
 
 const (
@@ -19,23 +19,26 @@ const (
 	WEB_HOOKS  = "/webhooks"
 )
 
-var headHandle = cors.Allow(&cors.Options{
-	AllowOrigins:     []string{"*"},
-	AllowMethods:     []string{"GET", "OPTIONS", "POST", "DELETE"},
-	AllowHeaders:     []string{"Limt,Offset,Content-Type,Origin,Accept,Authorization"},
-	ExposeHeaders:    []string{"Record-Count", "Limt", "Offset", "Content-Type"},
+var headHandle = cors.New(cors.Config{
+	AbortOnError:     false,
+	AllowAllOrigins:  true,
+	AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+	AllowedHeaders:   []string{"Content-Type", "Limt", "Offset", "Origin", "Accept"},
+	ExposedHeaders:   []string{"Record-Count", "Limt", "Offset", "Content-Type"},
 	AllowCredentials: true,
-	MaxAge:           time.Second * 864000,
+	MaxAge:           24 * time.Hour,
 })
 
 func Serve(listenAddr string) {
+
 	gr := NewGin()
 
 	gr.NoRoute(GinH(views.New()))
 
-	gr.Use(GinH(headHandle))
+	gr.Use(headHandle)
 
-	store := sessions.NewFilesystemStore("/tmp/ck", []byte("ck-session"))
+	store := sessions.NewCookieStore([]byte("secret"))
+	gr.Use(sessions.Sessions("ck-session", store))
 
 	// m.Use(sessions.Sessions("sloth", utils.GetCookieStore()))
 	gr.Use(requestContext())
@@ -77,6 +80,8 @@ func requestContext() gin.HandlerFunc {
 		res.Header().Set("Cache-Control", "no-cache")
 
 		/// TODO: set & load session
-		ctx.Set("ss", store.Get(ctx.Request, "UserToken"))
+		ss := sessions.Default(ctx)
+		_ = ss.Get("key")
+		// ctx.Set("ss", store.Get(ctx.Request, "UserToken"))
 	}
 }

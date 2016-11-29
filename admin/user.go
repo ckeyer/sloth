@@ -6,7 +6,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func NewUser(name, email, password string) {
+func NewUser(name, email string, password []byte) *User {
 	psd, _ := bcrypt.GenerateFromPassword(password, 13)
 	return &User{
 		Id:       bson.NewObjectId(),
@@ -14,9 +14,8 @@ func NewUser(name, email, password string) {
 		Email:    email,
 		Password: psd,
 	}
-
 }
 
-func (u *User) Hi() {
+func (u *User) Hi(db *mgo.Database) {
 
 }

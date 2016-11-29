@@ -27,7 +27,7 @@ func NotFound(rw http.ResponseWriter, req *http.Request) {
 }
 
 func WebhookRouter(r *gin.RouterGroup) {
-	r.POST("/github", GinH(WMAuthGithubServer), GinH(GithubWebhooks))
+	r.POST("/github", GinH(MWAuthGithubServer), GinH(GithubWebhooks))
 }
 
 func apiRouter(r *gin.RouterGroup) {
