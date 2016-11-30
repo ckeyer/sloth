@@ -3,5 +3,5 @@ package utils
 import ()
 
 const (
-	sessionKey = []byte("ck-sessions")
+// sessionKey = []byte("ck-sessions")
 )
