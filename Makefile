@@ -22,7 +22,7 @@ test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")
 
 run:
-	go run -a -ldflags="$(LD_FLAGS)" cli/main.go -D
+	go run -a -ldflags="$(LD_FLAGS)" cli/main.go -D run
 
 dev:
 	docker run --rm -it \
