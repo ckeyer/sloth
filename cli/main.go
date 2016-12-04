@@ -17,6 +17,7 @@ var (
 	// for flags.
 	debug                     bool
 	addr, raddr, rauth, uiDir string // runCmd
+	outputFile                string // evalCmd
 
 	// Flags
 	addrFlag = &cli.StringFlag{
@@ -54,6 +55,13 @@ var (
 		Value:       false,
 		Destination: &debug,
 	}
+	outputFlag = &cli.StringFlag{
+		Name:        "output",
+		Aliases:     []string{"o", "out"},
+		EnvVars:     []string{"OUTPUT_FILE"},
+		Value:       "sloth.html",
+		Destination: &outputFile,
+	}
 
 	// Authors
 	ckeyer = &cli.Author{
@@ -63,7 +71,9 @@ var (
 
 	// Commands
 	runCmd = &cli.Command{
-		Name: "run",
+		Name:    "run",
+		Aliases: []string{"r"},
+		Usage:   "Start web server.",
 		Flags: []cli.Flag{
 			addrFlag,
 			raddrFlag,
@@ -77,13 +87,23 @@ var (
 			return nil
 		},
 	}
+
+	evaluateCmd = &cli.Command{
+		Name:    "eval",
+		Aliases: []string{"evaluate", "e"},
+		Usage:   "Evaluate one golang file or project, and generate a html file.",
+		Flags: []cli.Flag{
+			debugFlag,
+			outputFlag,
+		},
+	}
 )
 
 func main() {
 
 	app := &cli.App{
 		Name:    "sloth",
-		Version: version.GetVersion(),
+		Version: version.GetCompleteVersion(),
 		Usage:   "",
 		Authors: []*cli.Author{
 			ckeyer,
@@ -93,12 +113,13 @@ func main() {
 		},
 		Before: func(ctx *cli.Context) error {
 			/// init config model.
-			gin.SetMode(gin.ReleaseMode)
 			log.SetFormatter(&log.JSONFormatter{})
 			if debug {
+				gin.SetMode(gin.DebugMode)
 				log.SetLevel(log.DebugLevel)
 				log.Debug("server is running at debug model.")
 			} else {
+				gin.SetMode(gin.ReleaseMode)
 				log.SetLevel(log.InfoLevel)
 			}
 
