@@ -13,6 +13,10 @@ import (
 	"gopkg.in/urfave/cli.v2"
 )
 
+const (
+	appName = "sloth"
+)
+
 var (
 	// for flags.
 	debug                     bool
@@ -96,13 +100,16 @@ var (
 			debugFlag,
 			outputFlag,
 		},
+		Action: func(ctx *cli.Context) error {
+
+			return nil
+		},
 	}
 )
 
 func main() {
-
 	app := &cli.App{
-		Name:    "sloth",
+		Name:    appName,
 		Version: version.GetCompleteVersion(),
 		Usage:   "",
 		Authors: []*cli.Author{
@@ -117,7 +124,7 @@ func main() {
 			if debug {
 				gin.SetMode(gin.DebugMode)
 				log.SetLevel(log.DebugLevel)
-				log.Debug("server is running at debug model.")
+				log.Debugf("%s at debug model.", appName)
 			} else {
 				gin.SetMode(gin.ReleaseMode)
 				log.SetLevel(log.InfoLevel)
@@ -127,6 +134,7 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			runCmd,
+			evaluateCmd,
 		},
 		Action: func(ctx *cli.Context) error {
 			return cli.ShowAppHelp(ctx)

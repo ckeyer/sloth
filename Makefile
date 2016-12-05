@@ -40,3 +40,6 @@ dev-ui:
 	 -v $(PWD)/ui:/opt/$(APP) \
 	 -w /opt/$(APP) \
 	 $(DEV_UI_IMAGE) bash
+
+try: local
+	./bundles/$(APP) -D eval asdf
