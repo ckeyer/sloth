@@ -1,0 +1,29 @@
+@import 'vars';
+
+.gray-bg {
+  background-color: $gray;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $border-color !important;
+}
+
+.footer {
+  background: none repeat scroll 0 0 white;
+}
+
+.pull-right {
+  float: left !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $border-color !important;
+}
+
+.navbar .navbar-brand {
+  margin-top: 6px;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 10px;
+  height: auto;
+}

@@ -59,7 +59,7 @@ export default {
 
  <!-- scoped -->
 <style lang="scss">
-@import '../../styles/vars.scss';
+@import '../../scss/style.scss';
 
 body {
   background-color: $gray;

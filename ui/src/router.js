@@ -5,14 +5,12 @@ import Login from './components/account/Login'
 import SignUp from './components/account/SignUp'
 import ResetPassword from './components/account/ResetPassword'
 
+import Main from './components/Main'
+
 Vue.use(VueRouter)
 
 const Foo = Vue.extend({
   template: '<p>This is foo!</p>'
-})
-
-const Bar = Vue.extend({
-  template: '<p>This is bar!</p>'
 })
 
 const router = new VueRouter({
@@ -33,7 +31,7 @@ const router = new VueRouter({
     },
     {
       path: '/',
-      component: Bar,
+      component: Main,
       children: [
         {
           path: '/foo',
