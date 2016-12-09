@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	log "github.com/Sirupsen/logrus"
@@ -15,9 +16,9 @@ import (
 
 var (
 	// for flags.
-	debug                     bool
-	addr, raddr, rauth, uiDir string // runCmd
-	outputFile                string // evalCmd
+	debug                             bool
+	addr, raddr, rauth, uiDir, mgoURL string // runCmd
+	outputFile                        string // evalCmd
 
 	// Flags
 	addrFlag = &cli.StringFlag{
@@ -62,6 +63,12 @@ var (
 		Value:       "sloth.html",
 		Destination: &outputFile,
 	}
+	mgoURLFlag = &cli.StringFlag{
+		Name:        "mgo_url",
+		Aliases:     []string{"mongoUrl"},
+		EnvVars:     []string{"MGO_URL"},
+		Destination: &mgoURL,
+	}
 
 	// Authors
 	ckeyer = &cli.Author{
@@ -80,6 +87,13 @@ var (
 			rauthFlag,
 			uiDirFlag,
 			debugFlag,
+			mgoURLFlag,
+		},
+		Before: func(ctx *cli.Command) error {
+			if mgoURL == "" {
+				return fmt.Errorf("invalid flags mgo_url(ENV MGO_URL)")
+			}
+			return nil
 		},
 		Action: func(ctx *cli.Context) error {
 			log.Info("server is running at ", addr)
