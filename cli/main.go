@@ -89,7 +89,7 @@ var (
 			debugFlag,
 			mgoURLFlag,
 		},
-		Before: func(ctx *cli.Command) error {
+		Before: func(ctx *cli.Context) error {
 			if mgoURL == "" {
 				return fmt.Errorf("invalid flags mgo_url(ENV MGO_URL)")
 			}
