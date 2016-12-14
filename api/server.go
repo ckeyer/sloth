@@ -1,7 +1,7 @@
 package api
 
 import (
-	stdlog "log"
+	logpkg "log"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +18,8 @@ import (
 const (
 	API_PREFIX = "/api"
 	WEB_HOOKS  = "/webhooks"
+
+	CtxMgoDB = "mgodb"
 )
 
 var headHandle = cors.New(cors.Config{
@@ -46,6 +48,7 @@ func Serve(listenAddr string, db *mgo.Database) {
 	gr.Use(requestContext())
 
 	gr.Use(GinLogger)
+	gr.Use(SetMgoDB(db))
 
 	// routers...
 	// /webhooks
@@ -57,7 +60,7 @@ func Serve(listenAddr string, db *mgo.Database) {
 	server := &http.Server{
 		Handler:  gr,
 		Addr:     listenAddr,
-		ErrorLog: stdlog.New(logger.Writer(), "", 0),
+		ErrorLog: logpkg.New(logger.Writer(), "", 0),
 	}
 
 	log.Info("server is starting on ", listenAddr)
@@ -79,11 +82,12 @@ func requestContext() gin.HandlerFunc {
 				return
 			}
 		}
+
 		res.Header().Set("Cache-Control", "no-cache")
 
 		/// TODO: set & load session
-		ss := sessions.Default(ctx)
-		_ = ss.Get("key")
+		// ss.Set("user", val)
+		// _ = ss.Get("key")
 		// ctx.Set("ss", store.Get(ctx.Request, "UserToken"))
 	}
 }

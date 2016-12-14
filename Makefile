@@ -49,3 +49,9 @@ dev-ui:
 	 -v $(PWD)/ui:/opt/$(APP) \
 	 -w /opt/$(APP) \
 	 $(DEV_UI_IMAGE) bash
+
+reg:
+	curl -i "http://localhost:8000/api/signup" -d '{"name":"ckeyer", "password":"wangcj", "email":"dev@ckeyer.com"}'
+
+login:
+	curl -i "http://localhost:8000/api/login" -d '{"password":"wangcj", "email":"dev@ckeyer.com"}'

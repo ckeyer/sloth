@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestPassword(t *testing.T) {
+func TestPasswordJSON(t *testing.T) {
 	var u struct {
 		Name     string   `json:"name"`
 		Password Password `json:"password"`
@@ -17,8 +17,9 @@ func TestPassword(t *testing.T) {
 		t.Error(err)
 		return
 	}
+	t.Logf("%#v", u.Password)
 	if u.Password != "asdfadsf" {
-		t.Errorf("u: %#v != asdfadsf", u)
+		t.Errorf("u: %+v != asdfadsf", u)
 		return
 	}
 
@@ -38,4 +39,20 @@ func TestPassword(t *testing.T) {
 		return
 	}
 
+}
+
+func TestPassword(t *testing.T) {
+	p1 := Password("asdfasdf")
+	pg, err := p1.Generate()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Logf("%s", pg)
+
+	err = pg.Compare([]byte("asdfasdf"))
+	if err != nil {
+		t.Error(err)
+		return
+	}
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"gopkg.in/mgo.v2"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -30,6 +31,12 @@ func GinH(h interface{}) gin.HandlerFunc {
 			ser.ServeHTTP(ctx.Writer, ctx.Request)
 			return
 		}
+	}
+}
+
+func SetMgoDB(db *mgo.Database) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Set(CtxMgoDB, db)
 	}
 }
 
