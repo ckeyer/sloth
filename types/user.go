@@ -1,24 +1,29 @@
 package types
 
+import (
+	"gopkg.in/mgo.v2/bson"
+)
+
 type User struct {
-	ID            int64          `bson:"_id"`
-	Name          string         `bson:"name"`
-	Email         string         `bson:"email"`
-	Password      string         `bson:"password"`
-	Role          string         `bson:"role"` // admin member
-	GithubAccount *GithubAccount `bson:"github"`
+	ID       bson.ObjectId `json:"id" bson:"_id"`
+	Name     string        `json:"name" bson:"name"`
+	Email    string        `json:"email" bson:"email"`
+	Phone    string        `json:"phone" bson:"phone"`
+	Password string        `json:"-" bson:"password"`
+
+	GithubAccount *GithubAccount `json:"github,omitempty" bson:"github,omitempty"`
+	WechatAccount *WechatAccount `json:"wechat,omitempty" bson:"wechat,omitempty"`
+}
+
+type WechatAccount struct {
+	Name string `json:"name" bson:"name"`
 }
 
 type GithubAccount struct {
-	Name     string `bson:"name"`
-	Email    string `bson:"email"`
-	Password string `bson:"password"`
-	Token    string `bson:"token"`
-}
-
-type WebhookConfig struct {
-	RepoName string `bson:""`
-	Secret   string `bson:"secret"`
+	Name     string `json:"name" bson:"name"`
+	Email    string `json:"email" bson:"email"`
+	Password string `json:"-" bson:"password"`
+	Token    string `json:"token" bson:"token"`
 }
 
 func (g *GithubAccount) GetToken() string {

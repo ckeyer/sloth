@@ -29,7 +29,9 @@ test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")
 
 run:
-	go run -a -ldflags="$(LD_FLAGS)" cli/main.go -D run
+	MGO_URL=$(MGO_URL) \
+	DEBUG=true \
+	go run -a -ldflags="$(LD_FLAGS)" cli/main.go run
 
 dev:
 	docker run --rm -it \

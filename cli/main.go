@@ -6,9 +6,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/api"
-	_ "github.com/ckeyer/sloth/types"
+	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/version"
-	_ "github.com/fsouza/go-dockerclient"
 	"github.com/gin-gonic/gin"
 	_ "gopkg.in/check.v1"
 	"gopkg.in/urfave/cli.v2"
@@ -67,6 +66,7 @@ var (
 		Name:        "mgo_url",
 		Aliases:     []string{"mongoUrl"},
 		EnvVars:     []string{"MGO_URL"},
+		Value:       "mongodb://localhost:27017/sloth",
 		Destination: &mgoURL,
 	}
 
@@ -83,8 +83,6 @@ var (
 		Usage:   "Start web server.",
 		Flags: []cli.Flag{
 			addrFlag,
-			raddrFlag,
-			rauthFlag,
 			uiDirFlag,
 			debugFlag,
 			mgoURLFlag,
@@ -93,18 +91,23 @@ var (
 			if mgoURL == "" {
 				return fmt.Errorf("invalid flags mgo_url(ENV MGO_URL)")
 			}
+
 			return nil
 		},
 		Action: func(ctx *cli.Context) error {
+			db, err := global.InitDB(mgoURL)
+			if err != nil {
+				return err
+			}
 			log.Info("server is running at ", addr)
-			api.Serve(addr)
+			api.Serve(addr, db)
 			return nil
 		},
 	}
 
 	evaluateCmd = &cli.Command{
 		Name:    "eval",
-		Aliases: []string{"evaluate", "e"},
+		Aliases: []string{"evaluate", "e", "check"},
 		Usage:   "Evaluate one golang file or project, and generate a html file.",
 		Flags: []cli.Flag{
 			debugFlag,

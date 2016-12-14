@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -30,7 +31,7 @@ var headHandle = cors.New(cors.Config{
 	MaxAge:           24 * time.Hour,
 })
 
-func Serve(listenAddr string) {
+func Serve(listenAddr string, db *mgo.Database) {
 
 	gr := NewGin()
 
