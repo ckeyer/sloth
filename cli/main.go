@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/api"
+	"github.com/ckeyer/sloth/docker"
 	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/version"
 	"github.com/gin-gonic/gin"
@@ -15,9 +16,14 @@ import (
 
 var (
 	// for flags.
-	debug                             bool
-	addr, raddr, rauth, uiDir, mgoURL string // runCmd
-	outputFile                        string // evalCmd
+	debug bool
+	addr,
+	raddr,
+	rauth,
+	uiDir,
+	mgoURL,
+	dockerEndpoint string // runCmd
+	outputFile string // evalCmd
 
 	// Flags
 	addrFlag = &cli.StringFlag{
@@ -69,6 +75,13 @@ var (
 		Value:       "mongodb://localhost:27017/sloth",
 		Destination: &mgoURL,
 	}
+	dockerEPFlag = &cli.StringFlag{
+		Name:        "docker_ep",
+		Aliases:     []string{"docker_endpoint"},
+		EnvVars:     []string{"DOCKER_EP", "DOCKER_ENDPOINT"},
+		Value:       "unix:///var/run/docker.sock",
+		Destination: &dockerEndpoint,
+	}
 
 	// Authors
 	ckeyer = &cli.Author{
@@ -86,10 +99,16 @@ var (
 			uiDirFlag,
 			debugFlag,
 			mgoURLFlag,
+			dockerEPFlag,
 		},
 		Before: func(ctx *cli.Context) error {
 			if mgoURL == "" {
 				return fmt.Errorf("invalid flags mgo_url(ENV MGO_URL)")
+			}
+
+			_, err := docker.Connect(dockerEndpoint)
+			if err != nil {
+				return err
 			}
 
 			return nil
@@ -99,6 +118,7 @@ var (
 			if err != nil {
 				return err
 			}
+			log.Info("connected mongodb successful.")
 			log.Info("server is running at ", addr)
 			api.Serve(addr, db)
 			return nil

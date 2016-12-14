@@ -38,6 +38,7 @@ dev:
 	 --name $(APP)-dev \
 	 -p 8000:8000 \
 	 $(NET) \
+	 -v /var/run/docker.sock:/var/run/docker.sock \
 	 -v $(PWD):/opt/gopath/src/$(PKG) \
 	 -w /opt/gopath/src/$(PKG) \
 	 $(DEV_IMAGE) bash
