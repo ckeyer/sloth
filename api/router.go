@@ -26,6 +26,7 @@ func NotFound(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// /webhooks/...
 func WebhookRouter(r *gin.RouterGroup) {
 	r.POST("/github", GinH(MWAuthGithubServer), GinH(GithubWebhooks))
 }
@@ -35,9 +36,15 @@ func apiRouter(r *gin.RouterGroup) {
 	r.POST("/login", Login)
 	r.POST("/signup", Registry)
 
+	/// /user/...
 	func(r *gin.RouterGroup) {
 		r.DELETE("/logout", Logout)
 	}(r.Group("/user"))
+
+	/// /github/...
+	func(r *gin.RouterGroup) {
+		r.POST("/", TODO)
+	}(r.Group("/github"))
 }
 
 func ping(ctx *gin.Context) {

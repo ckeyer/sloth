@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Login from './components/account/Login'
+import LoginGithub from './components/account/LoginGithub'
+import LoginWechat from './components/account/LoginWechat'
+import LoginUser from './components/account/LoginUser'
 import SignUp from './components/account/SignUp'
 import ResetPassword from './components/account/ResetPassword'
 
@@ -19,7 +22,21 @@ const router = new VueRouter({
   routes: [
     {
       path: '/login',
-      component: Login
+      component: Login,
+      children: [
+        {
+          path: 'github',
+          component: LoginGithub
+        },
+        {
+          path: 'wechat',
+          component: LoginWechat
+        },
+        {
+          path: '',
+          component: LoginUser
+        }
+      ]
     },
     {
       path: '/signup',
@@ -34,7 +51,7 @@ const router = new VueRouter({
       component: Main,
       children: [
         {
-          path: '/foo',
+          path: 'foo',
           component: Foo
         }
       ]
