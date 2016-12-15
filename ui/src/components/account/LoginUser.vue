@@ -8,10 +8,9 @@
     <div class="form-group">
       <input type="password" class="form-control" placeholder="密码" required="" v-model="password">
     </div>
-    <button type="submit" class="btn btn-primary" @click="login">登入</button>
-    <router-link :to="{path:'/resetpassword'}"><small>找回密码</small></router-link>
-
+    <button type="submit" class="btn btn-primary" :class="{disabled: !allowSubmit}" @click="login">登入</button>
     <button type="submit" class="btn btn-primary" @click="ping">Ping</button>
+    <router-link :to="{path:'/resetpassword'}"><small>找回密码</small></router-link>
   </div>
 </template>
 
@@ -26,8 +25,7 @@ export default {
     return {
       logo_name: 'Sloth',
       email: '',
-      password: '',
-      hi: 'hi'
+      password: ''
     }
   },
   created: function () {
@@ -35,13 +33,23 @@ export default {
     console.log('router', this.$route)
   },
   computed: {
-    routerPath: function () {
-      return ''
+    allowSubmit: function () {
+      return this.email !== '' && this.password.length > 4
     }
   },
   methods: {
     login: function () {
-      console.log('login.', this.email, this.password)
+      let body = {
+        email: this.email,
+        password: this.password
+      }
+      console.log('login.', body)
+      api.login(body).end(function (err, resp) {
+        if (err) {
+          Alert.error(err, '请求错误')
+        }
+        console.log('post login', err, resp)
+      })
     },
     ping: function () {
       api.ping().end(function (err, resp) {
