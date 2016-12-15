@@ -9,7 +9,6 @@ export default {
   login: (body) => {
     return request.post(API_ROOT + '/login')
       .send(body)
-      .withCredentials()
       .set('Accept', 'application/json')
   }
 }

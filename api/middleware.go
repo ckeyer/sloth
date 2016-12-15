@@ -13,12 +13,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func CorsHandle(ctx *gin.Context) {
+	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limt,Offset,Origin,Accept")
+	ctx.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
+	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	ctx.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprint(24*time.Hour/time.Second))
+
+	if ctx.Request.Method == "OPTIONS" {
+		GinMessage(ctx, 200, "ok")
+	}
+}
+
 func GinLogger(ctx *gin.Context) {
 	start := time.Now()
 	ctx.Next()
+
 	log.WithFields(log.Fields{
 		"Method": ctx.Request.Method,
 		"URL":    ctx.Request.URL.Path,
+		"Status": ctx.Writer.Status(),
 		"Period": fmt.Sprintf("%.6f", time.Now().Sub(start).Seconds()),
 	}).Debug("bye jack.")
 

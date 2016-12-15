@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
-	"gopkg.in/mgo.v2"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
 )
 
 func NewGin() *gin.Engine {
@@ -31,6 +31,7 @@ func GinH(h interface{}) gin.HandlerFunc {
 			ser.ServeHTTP(ctx.Writer, ctx.Request)
 			return
 		}
+		log.Errorf("cannot transform %T --> gin.HandlerFunc", h)
 	}
 }
 
