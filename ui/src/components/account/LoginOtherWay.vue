@@ -2,7 +2,8 @@
   <div id="login_github">
     Login With Github
     <div>
-      <a><i class="fa fa-github-alt fa-6"></i></a>
+      <a><i class="fa fa-github-alt fa-4"></i></a>
+      <a><i class="fa fa-wechat fa-4"></i></a>
     </div>
   </div>
 </template>
@@ -18,6 +19,12 @@ export default {
 
 <style scope>
 #login_github i {
-  font-size: 240px;
+  font-size: 80px;
+  margin: 10px;
+}
+
+#login_github a {
+  border: 2px;
+  border-color: #444;
 }
 </style>

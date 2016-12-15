@@ -9,8 +9,7 @@
         <div class="middle-box tabs-container">
           <ul class="nav nav-tabs">
               <li :class="{ active: isUser}"><router-link to="/login"> <i class="fa fa-user fa-3"></i></router-link></li>
-              <li :class="{ active: isGithub}"><router-link to="/login/github"><i class="fa fa-github fa-3"></i></router-link></li>
-              <li :class="{ active: isWechat}"><router-link to="/login/wechat"><i class="fa fa-wechat fa-3"></i></router-link></li>
+              <li :class="{ active: !isUser}"><router-link to="/login/others"><i class="fa fa-cloud fa-3"></i></router-link></li>
           </ul>
 
           <div class="tab-content">
@@ -42,14 +41,8 @@ export default {
     console.log('router', this.$route)
   },
   computed: {
-    isGithub: function () {
-      return this.$route.path === '/login/github'
-    },
-    isWechat: function () {
-      return this.$route.path === '/login/wechat'
-    },
     isUser: function () {
-      return !(this.isGithub || this.isWechat)
+      return this.$route.path === '/login'
     }
   },
   methods: {
@@ -69,6 +62,9 @@ a {
   cursor: hand;
 }
 li i {
+  font-size: 20px;
+}
+.fa-3 {
   font-size: 20px;
 }
 .logo-title {
