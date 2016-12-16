@@ -35,11 +35,11 @@ func apiRouter(r *gin.RouterGroup) {
 	r.GET("/_ping", ping)
 	r.POST("/login", Login)
 	r.POST("/signup", Registry)
+	r.DELETE("/logout", MWNeedLogin, Logout)
 
 	/// /user/...
 	func(r *gin.RouterGroup) {
-		r.DELETE("/logout", Logout)
-	}(r.Group("/user"))
+	}(r.Group("/user", MWNeedLogin))
 
 	/// /github/...
 	func(r *gin.RouterGroup) {

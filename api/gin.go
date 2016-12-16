@@ -37,7 +37,11 @@ func GinH(h interface{}) gin.HandlerFunc {
 
 func SetMgoDB(db *mgo.Database) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.Set(CtxMgoDB, db)
+		newDb := db.Session.Clone().DB(db.Name)
+		ctx.Set(CtxMgoDB, newDb)
+		ctx.Next()
+		newDb.Session.Close()
+		log.Debugf("closed mongo session.")
 	}
 }
 

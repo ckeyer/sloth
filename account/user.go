@@ -20,7 +20,7 @@ func (u *User) Registry(db *mgo.Database) (*User, error) {
 
 	passwd, err := u.Password.Generate()
 	if err != nil {
-		log.Errorf("generate user's password<%+v> failed, %s", u.Password, err)
+		log.Errorf("generate user's password %+v failed, %s", u.Password, err)
 		return nil, err
 	}
 	u.Password = passwd
@@ -49,7 +49,7 @@ func (u *User) Login(db *mgo.Database) (*User, error) {
 
 	err := db.C(global.ColUser).Find(query).One(exUser)
 	if err != nil {
-		log.Warnf("can not found <%+v> in mgodb, %s", query, err)
+		log.Warnf("can not found user %+v in mgodb, %s", query, err)
 		return nil, err
 	}
 

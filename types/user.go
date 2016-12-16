@@ -33,6 +33,15 @@ type GithubAccount struct {
 	Token     Password `json:"token" bson:"token"`
 }
 
+type UserAuth struct {
+	Id      bson.ObjectId `json:"id" bson:"_id"`
+	UserId  bson.ObjectId `json:"user_id" bson:"user_id"`
+	Token   string        `json:"token" bson:"token"`
+	Created time.Time     `json:"created" bson:"created"`
+	Lasted  time.Time     `json:"lasted" bson:"lasted"`
+	Expired time.Time     `json:"expired" bson:"expired"`
+}
+
 // func (g *GithubAccount) GetToken() string {
 // 	if len(g.Token) == 0 {
 // 		return string(g.Token)

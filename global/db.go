@@ -8,9 +8,15 @@ import (
 )
 
 const (
-	ColUser    = "user"
-	ColProject = "project"
-	ColWebhook = "webhook"
+	ColUser     = "user"
+	ColProject  = "project"
+	ColWebhook  = "webhook"
+	ColUserAuth = "user_auth"
+)
+
+var (
+	// for reconnect
+	mgourl = ""
 )
 
 func mgoIndexes() mongo.MgoIndexs {
@@ -19,6 +25,11 @@ func mgoIndexes() mongo.MgoIndexs {
 			mgo.Index{
 				Key:    []string{"name", "email", "phone"},
 				Unique: true,
+			},
+		},
+		ColUserAuth: []mgo.Index{
+			mgo.Index{
+				Key: []string{"user_id", "lasted", "expired"},
 			},
 		},
 		ColProject: []mgo.Index{
@@ -44,6 +55,8 @@ func InitDB(url string) (*mgo.Database, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Set MGO Indexes failed, %s", err)
 	}
+
+	mgourl = url
 
 	return db, nil
 }

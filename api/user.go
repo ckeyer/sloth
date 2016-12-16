@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/ckeyer/sloth/account"
 	"github.com/gin-gonic/contrib/sessions"
@@ -19,20 +20,38 @@ func Login(ctx *gin.Context) {
 	}
 
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
-	ret, err := u.Login(db)
+	user, err := u.Login(db)
 	if err != nil {
 		GinError(ctx, 500, err)
 		return
 	}
 
 	ss := sessions.Default(ctx)
-	ss.Set("user", ret)
+	ss.Set("user", user)
 
+	ua := account.NewUserAuth(user.Id, time.Now().Add(time.Hour*24*90))
+	if err := ua.Insert(db); err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+
+	ret := map[string]interface{}{
+		"user":      user,
+		"user_auth": ua,
+	}
 	ctx.JSON(200, ret)
 }
 
 func Logout(ctx *gin.Context) {
-	GinMessage(ctx, 500, "...")
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	ua := ctx.MustGet(CtxUserAuth).(*account.UserAuth)
+
+	if err := ua.Remove(db); err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+
+	GinMessage(ctx, 200, "ok")
 }
 
 func Registry(ctx *gin.Context) {

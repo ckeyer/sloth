@@ -5,16 +5,19 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"fmt"
+	"github.com/ckeyer/sloth/account"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
 )
 
 func CorsHandle(ctx *gin.Context) {
-	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limt,Offset,Origin,Accept")
+	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limt,Offset,Origin,Accept,X-Signature")
 	ctx.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprint(24*time.Hour/time.Second))
@@ -38,15 +41,32 @@ func GinLogger(ctx *gin.Context) {
 }
 
 func MWNeedLogin(ctx *gin.Context) {
-	token := ctx.Request.Header.Get("X-Token")
-	if token == "" {
+	xsign := ctx.Request.Header.Get("X-Signature")
+	if xsign == "" {
 		var err error
-		token, err = ctx.Cookie("UserToken")
+		xsign, err = ctx.Cookie("x-signature")
 		if err != nil {
-			GinError(ctx, 401, "Not Found Header X-Token")
+			GinError(ctx, 401, "Not Found Header X-Signature")
 			return
 		}
 	}
+
+	signSli := strings.Split(xsign, ":")
+	if len(signSli) != 3 {
+		GinError(ctx, 401, "Invalid Header X-Signature")
+		return
+	}
+
+	apiKey, timestamp, sign := signSli[0], signSli[1], signSli[2]
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+
+	ua, err := account.AuthSignature(db, apiKey, timestamp, sign)
+	if err != nil {
+		GinError(ctx, 401, "Invalid signature content")
+		return
+	}
+
+	ctx.Set(CtxUserAuth, ua)
 }
 
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
