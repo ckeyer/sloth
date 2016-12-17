@@ -9,6 +9,7 @@ import (
 	"github.com/ckeyer/sloth/docker"
 	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/version"
+	"github.com/ckeyer/sloth/views"
 	"github.com/gin-gonic/gin"
 	_ "gopkg.in/check.v1"
 	"gopkg.in/urfave/cli.v2"
@@ -102,6 +103,10 @@ var (
 			dockerEPFlag,
 		},
 		Before: func(ctx *cli.Context) error {
+			if uiDir != "" {
+				views.SetUIDir(uiDir)
+			}
+
 			if mgoURL == "" {
 				return fmt.Errorf("invalid flags mgo_url(ENV MGO_URL)")
 			}

@@ -16,10 +16,6 @@ UI_NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet 
 
 # 连接url ： [mongodb:// ][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 MGO_URL := mongodb://ckeyer:X4etb83XtjlXz@u3.mj:27017/sloth
-# MGO_ADDR := u3.mj
-# MGO_DB := sloth
-# MGO_USER := ckeyer
-# MGO_AUTH := X4etb83XtjlXz
 
 local:
 	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
@@ -31,6 +27,7 @@ test:
 run:
 	MGO_URL=$(MGO_URL) \
 	DEBUG=true \
+	UI_DIR="../sloth-ui/dist" \
 	go run -a -ldflags="$(LD_FLAGS)" cli/main.go run
 
 dev:

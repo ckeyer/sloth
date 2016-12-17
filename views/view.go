@@ -10,6 +10,10 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+var (
+	uiDir = "assets/"
+)
+
 type Views struct {
 	Names map[string]struct{}
 	Index string
@@ -26,10 +30,9 @@ func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = v.Index
 	}
-	data, err := os.Open("assets/" + name)
+	data, err := os.Open(uiDir + name)
 	if err != nil && strings.HasSuffix(err.Error(), "no such file or directory") {
-		log.Debug("no such file or directory")
-		data, err = os.Open("assets/" + v.Index)
+		data, err = os.Open(uiDir + v.Index)
 	}
 
 	if err != nil {
@@ -54,4 +57,9 @@ func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		io.Copy(w, gz)
 		gz.Close()
 	}
+}
+
+func SetUIDir(path string) {
+	uiDir = strings.TrimSuffix(path, "/") + "/"
+	log.Infof("set ths ui dir: %s", uiDir)
 }
