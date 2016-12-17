@@ -6,12 +6,19 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+const (
+	RoleAdmin  = "admin"
+	RoleMember = "member"
+	RoleGuest  = "guest"
+)
+
 type User struct {
 	Id       bson.ObjectId `json:"id" bson:"_id"`
 	Name     string        `json:"name" bson:"name"`
 	Email    string        `json:"email" bson:"email"`
 	Phone    string        `json:"phone" bson:"phone"`
 	Password Password      `json:"password" bson:"password"`
+	Role     string        `json:"role" bson:"role"`
 
 	Created   time.Time `json:"created" bson:"created"`
 	Updated   time.Time `json:"updated" bson:"updated"`

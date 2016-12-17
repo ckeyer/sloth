@@ -5,13 +5,13 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"fmt"
-	"github.com/ckeyer/sloth/account"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/admin"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 )
@@ -60,7 +60,7 @@ func MWNeedLogin(ctx *gin.Context) {
 	apiKey, timestamp, sign := signSli[0], signSli[1], signSli[2]
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
 
-	ua, err := account.AuthSignature(db, apiKey, timestamp, sign)
+	ua, err := admin.AuthSignature(db, apiKey, timestamp, sign)
 	if err != nil {
 		GinError(ctx, 401, "Invalid signature content")
 		return

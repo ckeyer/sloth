@@ -4,7 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/admin"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
 )
 
 func TODO(ctx *gin.Context) {
@@ -33,6 +36,7 @@ func WebhookRouter(r *gin.RouterGroup) {
 
 func apiRouter(r *gin.RouterGroup) {
 	r.GET("/_ping", ping)
+	r.GET("/status", GetStatus)
 	r.POST("/login", Login)
 	r.POST("/signup", Registry)
 	r.DELETE("/logout", MWNeedLogin, Logout)
@@ -44,9 +48,23 @@ func apiRouter(r *gin.RouterGroup) {
 	/// /github/...
 	func(r *gin.RouterGroup) {
 		r.POST("/", TODO)
+		r.POST("/auth", GHAuthCallback)
+		r.GET("/access_url", GetAccessURL)
 	}(r.Group("/github"))
 }
 
 func ping(ctx *gin.Context) {
 	GinMessage(ctx, 200, "hi")
+}
+
+func GetStatus(ctx *gin.Context) {
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	ret, err := admin.Status(db)
+	if err != nil {
+		log.Error("get status failed", err)
+		GinError(ctx, 500, err)
+		return
+	}
+
+	ctx.JSON(200, ret)
 }

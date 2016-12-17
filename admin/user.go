@@ -1,4 +1,4 @@
-package account
+package admin
 
 import (
 	"fmt"
@@ -17,6 +17,15 @@ func (u *User) Registry(db *mgo.Database) (*User, error) {
 	u.Id = bson.NewObjectId()
 	u.Created = time.Now()
 	u.Updated = time.Now()
+	u.Role = types.RoleMember
+
+	status, err := Status(db)
+	if err != nil {
+		return nil, err
+	}
+	if status["user"].(int) == 0 {
+		u.Role = types.RoleAdmin
+	}
 
 	passwd, err := u.Password.Generate()
 	if err != nil {

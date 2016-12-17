@@ -1,4 +1,4 @@
-package account
+package admin
 
 import (
 	"crypto/hmac"

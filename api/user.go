@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ckeyer/sloth/account"
+	"github.com/ckeyer/sloth/admin"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 )
 
 func Login(ctx *gin.Context) {
-	u := new(account.User)
+	u := new(admin.User)
 	err := json.NewDecoder(ctx.Request.Body).Decode(u)
 	if err != nil {
 		GinError(ctx, 400, err)
@@ -29,7 +29,7 @@ func Login(ctx *gin.Context) {
 	ss := sessions.Default(ctx)
 	ss.Set("user", user)
 
-	ua := account.NewUserAuth(user.Id, time.Now().Add(time.Hour*24*90))
+	ua := admin.NewUserAuth(user.Id, time.Now().Add(time.Hour*24*90))
 	if err := ua.Insert(db); err != nil {
 		GinError(ctx, 500, err)
 		return
@@ -44,7 +44,7 @@ func Login(ctx *gin.Context) {
 
 func Logout(ctx *gin.Context) {
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
-	ua := ctx.MustGet(CtxUserAuth).(*account.UserAuth)
+	ua := ctx.MustGet(CtxUserAuth).(*admin.UserAuth)
 
 	if err := ua.Remove(db); err != nil {
 		GinError(ctx, 500, err)
@@ -55,7 +55,7 @@ func Logout(ctx *gin.Context) {
 }
 
 func Registry(ctx *gin.Context) {
-	u := new(account.User)
+	u := new(admin.User)
 	err := json.NewDecoder(ctx.Request.Body).Decode(u)
 	if err != nil {
 		GinError(ctx, 400, err)
