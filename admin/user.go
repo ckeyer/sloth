@@ -13,6 +13,17 @@ import (
 
 type User types.User
 
+func GetUser(db *mgo.Database, id bson.ObjectId) (*User, error) {
+	u := &User{}
+	err := db.C(global.ColUser).FindId(id).One(u)
+	if err != nil {
+		log.Errorf("find user by %s failed, %s", id, err)
+		return nil, err
+	}
+
+	return u, nil
+}
+
 func (u *User) Registry(db *mgo.Database) (*User, error) {
 	u.Id = bson.NewObjectId()
 	u.Created = time.Now()
@@ -80,4 +91,8 @@ func (u *User) Login(db *mgo.Database) (*User, error) {
 	}
 
 	return exUser, nil
+}
+
+func (u *User) IsAdmin() bool {
+	return u.Role == types.RoleAdmin
 }

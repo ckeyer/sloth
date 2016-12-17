@@ -12,6 +12,7 @@ const (
 	ColProject  = "project"
 	ColWebhook  = "webhook"
 	ColUserAuth = "user_auth"
+	ColSettings = "settings"
 )
 
 var (
@@ -39,6 +40,12 @@ func mgoIndexes() mongo.MgoIndexs {
 			},
 			mgo.Index{
 				Key: []string{"type"},
+			},
+		},
+		ColSettings: []mgo.Index{
+			mgo.Index{
+				Key:    []string{"key"},
+				Unique: true,
 			},
 		},
 	}

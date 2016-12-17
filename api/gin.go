@@ -53,6 +53,10 @@ func GinError(ctx *gin.Context, status int, err ...interface{}) {
 	l := len(err)
 	ret := map[string]interface{}{"error": ""}
 	if l >= 1 {
+		switch err[0] {
+		case mgo.ErrNotFound:
+			status = 404
+		}
 		ret["error"] = fmt.Sprint(err[0])
 	}
 	if l >= 2 {

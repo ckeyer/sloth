@@ -1,4 +1,4 @@
-package git
+package gh
 
 import (
 	"encoding/json"

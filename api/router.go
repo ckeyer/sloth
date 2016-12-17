@@ -39,18 +39,25 @@ func apiRouter(r *gin.RouterGroup) {
 	r.GET("/status", GetStatus)
 	r.POST("/login", Login)
 	r.POST("/signup", Registry)
-	r.DELETE("/logout", MWNeedLogin, Logout)
 
-	/// /user/...
+	/// require login.
 	func(r *gin.RouterGroup) {
-	}(r.Group("/user", MWNeedLogin))
+		r.DELETE("/logout", Logout)
+	}(r.Group("", MWRequireLogin))
+
+	/// require admin.
+	func(r *gin.RouterGroup) {
+		r.GET("/settings", GetSettings)
+		r.GET("/settings/:key", GetSettings)
+		r.POST("/settings", AddSettings)
+	}(r.Group("", MWRequireLogin, MWRequireAdmin))
 
 	/// /github/...
 	func(r *gin.RouterGroup) {
 		r.POST("/", TODO)
 		r.POST("/auth", GHAuthCallback)
 		r.GET("/access_url", GetAccessURL)
-	}(r.Group("/github"))
+	}(r.Group("/github", MWLoadGithubApp))
 }
 
 func ping(ctx *gin.Context) {

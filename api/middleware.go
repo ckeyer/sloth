@@ -37,10 +37,9 @@ func GinLogger(ctx *gin.Context) {
 		"Status": ctx.Writer.Status(),
 		"Period": fmt.Sprintf("%.6f", time.Now().Sub(start).Seconds()),
 	}).Debug("bye jack.")
-
 }
 
-func MWNeedLogin(ctx *gin.Context) {
+func MWRequireLogin(ctx *gin.Context) {
 	xsign := ctx.Request.Header.Get("X-Signature")
 	if xsign == "" {
 		var err error
@@ -69,6 +68,31 @@ func MWNeedLogin(ctx *gin.Context) {
 	ctx.Set(CtxUserAuth, ua)
 }
 
+// 需要管理员权限，需要在使用 MWRequireLogin 之后
+func MWRequireAdmin(ctx *gin.Context) {
+	cua, ok := ctx.Get(CtxUserAuth)
+	if !ok {
+		log.Errorf("show use MWRequireLogin before")
+		GinError(ctx, 401, "need login.")
+		return
+	}
+	ua := cua.(*admin.UserAuth)
+
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	u, err := admin.GetUser(db, ua.UserId)
+	if err != nil {
+		GinError(ctx, 500, "cannot find user.")
+		return
+	}
+
+	if !u.IsAdmin() {
+		GinError(ctx, 403, "required admin role.")
+		return
+	}
+
+	ctx.Set(CtxUser, u)
+}
+
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -82,8 +106,40 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	mac.Write(data)
 	expectedMAC := mac.Sum(nil)
 	if fmt.Sprintf("sha1=%x", expectedMAC) != req.Header.Get("X-Hub-Signature") {
-		log.Warningf("the webhooks' sha1 from github should be %s, but now is %x",
-			req.Header.Get("X-Hub-Signature"), expectedMAC)
+		log.WithFields(log.Fields{
+			"header":  req.Header.Get("X-Hub-Signature"),
+			"compute": expectedMAC,
+		}).Warn("Invalid X-Hub-Signature.")
 	}
 	log.Debugf("github server auth passing")
+}
+
+func MWLoadGithubApp(ctx *gin.Context) {
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	ghappK := &GithubApp{
+		ClientId:        "gh_client_id",
+		ClientSecret:    "gh_client_secret",
+		AuthCallbackURL: "gh_auth_callback_url",
+	}
+	cid, err := admin.GetValue(db, ghappK.ClientId)
+	if err != nil {
+		GinError(ctx, 500, "require settings.", ghappK.ClientId)
+		return
+	}
+	sec, err := admin.GetValue(db, ghappK.ClientSecret)
+	if err != nil {
+		GinError(ctx, 500, "require settings.", ghappK.ClientSecret)
+		return
+	}
+	callback, err := admin.GetValue(db, ghappK.AuthCallbackURL)
+	if err != nil {
+		GinError(ctx, 500, "require settings.", ghappK.AuthCallbackURL)
+		return
+	}
+
+	ctx.Set(CtxGithubApp, &GithubApp{
+		ClientId:        cid,
+		ClientSecret:    sec,
+		AuthCallbackURL: callback,
+	})
 }
