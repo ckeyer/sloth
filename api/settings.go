@@ -16,14 +16,15 @@ func GetSettings(ctx *gin.Context) {
 		keys = []string{ctx.Param("key")}
 	} else {
 		keys = strings.Split(ctx.Query("key"), ",")
-		if keys[0] == "" {
-			GinError(ctx, 400, "invalid key")
-			return
-		}
+	}
+	if len(keys) < 1 || keys[0] == "" {
+		GinError(ctx, 400, "invalid key")
+		return
 	}
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
 
-	ret, err := admin.GetKVs(db, keys...)
+	log.Debugf("get settings, %+v", keys)
+	ret, err := admin.GetValues(db, keys...)
 	if err != nil {
 		GinError(ctx, 500, err)
 		return

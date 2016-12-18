@@ -66,6 +66,21 @@ func GetValue(db *mgo.Database, k string) (string, error) {
 	return s.Value, nil
 }
 
+// 查询已存在的，对不存在的报错
+func GetValues(db *mgo.Database, ks ...string) (map[string]string, error) {
+	ret := map[string]string{}
+	for _, key := range ks {
+		value, err := GetValue(db, key)
+		if err != nil {
+			return nil, err
+		}
+		ret[key] = value
+	}
+
+	return ret, nil
+}
+
+// 查询已存在的，对不存在的不报错
 func GetKVs(db *mgo.Database, ks ...string) (map[string]string, error) {
 	query := bson.M{
 		"key": bson.M{

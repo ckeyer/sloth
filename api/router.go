@@ -1,6 +1,7 @@
 package api
 
 import (
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -9,16 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 )
-
-func TODO(ctx *gin.Context) {
-	GinMessage(
-		ctx,
-		503,
-		"Function is under development...",
-		ctx.Request.Method,
-		ctx.Request.URL.Path,
-	)
-}
 
 func NotFound(rw http.ResponseWriter, req *http.Request) {
 	for _, pre := range []string{API_PREFIX, WEB_HOOKS} {
@@ -55,7 +46,7 @@ func apiRouter(r *gin.RouterGroup) {
 	/// /github/...
 	func(r *gin.RouterGroup) {
 		r.POST("/", TODO)
-		r.POST("/auth", GHAuthCallback)
+		r.POST("/auth", GHAuthCallback, TODO)
 		r.GET("/access_url", GetAccessURL)
 	}(r.Group("/github", MWLoadGithubApp))
 }
@@ -74,4 +65,23 @@ func GetStatus(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, ret)
+}
+
+func TODO(ctx *gin.Context) {
+	bs, _ := ioutil.ReadAll(ctx.Request.Body)
+
+	log.WithFields(log.Fields{
+		"Method":  ctx.Request.Method,
+		"Path":    ctx.Request.URL.Path,
+		"Remote":  ctx.Request.RemoteAddr,
+		"Headers": ctx.Request.Header,
+		"Agent":   ctx.Request.UserAgent(),
+	}).Debug(string(bs))
+	GinMessage(
+		ctx,
+		503,
+		"Function is under development...",
+		ctx.Request.Method,
+		ctx.Request.URL.Path,
+	)
 }
