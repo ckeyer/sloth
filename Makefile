@@ -14,12 +14,14 @@ LD_FLAGS := -X $(PKG)/version.version=$(VERSION) -X $(PKG)/version.gitCommit=$(G
 NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet --ip 172.16.1.8" || echo "")
 UI_NET := $(shell docker network inspect cknet > /dev/zero && echo "--net cknet --ip 172.16.1.9" || echo "")
 
+HASH := $(shell which sha1sum || which shasum)
+
 # 连接url ： [mongodb:// ][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 MGO_URL := mongodb://ckeyer:X4etb83XtjlXz@u3.mj:27017/sloth
 
 local:
 	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
-	echo "build successful."
+	$(HASH) bundles/$(APP)
 
 test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")

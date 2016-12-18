@@ -30,3 +30,8 @@ func GetEvent(evt string, data io.Reader) {
 	}
 	log.Debug(ret)
 }
+
+func try() {
+	cli := libgithub.NewClient(nil)
+	cli.NewRequest(method, urlStr, body)
+}

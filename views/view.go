@@ -40,6 +40,7 @@ func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.WriteHeader(200)
 	io.Copy(w, data)
 
 	// TODO
