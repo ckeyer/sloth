@@ -33,6 +33,12 @@ func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, err := os.Open(uiDir + name)
 	if err != nil && strings.HasSuffix(err.Error(), "no such file or directory") {
 		data, err = os.Open(uiDir + v.Index)
+	} else {
+		if strings.HasSuffix(name, "css") {
+			w.Header().Set("Content-Type", "text/css")
+		} else if strings.HasSuffix(name, "js") {
+			w.Header().Set("Content-Type", "application/javascript")
+		}
 	}
 
 	if err != nil {

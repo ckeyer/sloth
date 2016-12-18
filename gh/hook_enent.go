@@ -32,6 +32,4 @@ func GetEvent(evt string, data io.Reader) {
 }
 
 func try() {
-	cli := libgithub.NewClient(nil)
-	cli.NewRequest(method, urlStr, body)
 }

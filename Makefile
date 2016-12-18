@@ -31,6 +31,8 @@ run:
 	DEBUG=true \
 	UI_DIR="../sloth-ui/dist" \
 	go run -a -ldflags="$(LD_FLAGS)" cli/main.go run
+	# ./bundles/$(APP) run
+	
 
 dev:
 	docker run --rm -it \
@@ -38,7 +40,7 @@ dev:
 	 -p 8000:8000 \
 	 $(NET) \
 	 -v /var/run/docker.sock:/var/run/docker.sock \
-	 -v $(PWD):/opt/gopath/src/$(PKG) \
+	 -v $(PWD)/..:/opt/gopath/src/$(PKG)/.. \
 	 -w /opt/gopath/src/$(PKG) \
 	 $(DEV_IMAGE) bash
 
