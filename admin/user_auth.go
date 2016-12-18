@@ -76,7 +76,7 @@ func AuthSignature(db *mgo.Database, apiKey, timestamp, sign string) (*UserAuth,
 	// token已经过期
 	if ua.Expired.Before(time.Now()) {
 		if err := ua.Remove(db); err != nil {
-			log.Errorf("remove user-auth %+v failed, ", ua, err)
+			log.Errorf("remove user-auth %+v failed, %s", ua, err)
 			return ua, err
 		}
 		return ua, fmt.Errorf("Token is expired.")

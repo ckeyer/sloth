@@ -41,7 +41,11 @@ func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	io.Copy(w, data)
-	return
+
+	// TODO
+	if true {
+		return
+	}
 
 	hdr := r.Header.Get("Accept-Encoding")
 	if strings.Contains(hdr, "gzip") {

@@ -28,7 +28,7 @@ func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
 
 // GET /github/access_url
 func GetAccessURL(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(GithubApp)
+	ghApp := ctx.MustGet(CtxGithubApp).(*GithubApp)
 	u, _ := url.Parse("https://github.com/login/oauth/authorize")
 
 	query := u.Query()
