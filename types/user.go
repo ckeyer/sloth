@@ -13,7 +13,7 @@ const (
 )
 
 type User struct {
-	Id       bson.ObjectId `json:"id" bson:"_id"`
+	ID       bson.ObjectId `json:"id" bson:"_id"`
 	Name     string        `json:"name" bson:"name"`
 	Email    string        `json:"email" bson:"email"`
 	Phone    string        `json:"phone" bson:"phone"`
@@ -33,16 +33,20 @@ type WechatAccount struct {
 }
 
 type GithubAccount struct {
-	Name      string   `json:"name" bson:"name"`
-	Email     string   `json:"email" bson:"email"`
+	ID       int    `json:"id" bson:"id"`
+	Name     string `json:"name" bson:"name"`
+	Email    string `json:"email" bson:"email"`
+	Location string `json:"location" bson:"location"`
+	Type     string `json:"type" bson:"type"`
+
 	Password  Password `json:"password" bson:"password"`
 	DeployKey Password `json:"deploy_key" bson:"deploy_key"`
 	Token     Password `json:"token" bson:"token"`
 }
 
 type UserAuth struct {
-	Id      bson.ObjectId `json:"id" bson:"_id"`
-	UserId  bson.ObjectId `json:"user_id" bson:"user_id"`
+	ID      bson.ObjectId `json:"id" bson:"_id"`
+	UserID  bson.ObjectId `json:"user_id" bson:"user_id"`
 	Token   string        `json:"token" bson:"token"`
 	Created time.Time     `json:"created" bson:"created"`
 	Lasted  time.Time     `json:"lasted" bson:"lasted"`

@@ -21,8 +21,8 @@ type UserAuth types.UserAuth
 
 func NewUserAuth(uid bson.ObjectId, expired time.Time) *UserAuth {
 	return &UserAuth{
-		Id:      bson.NewObjectId(),
-		UserId:  uid,
+		ID:      bson.NewObjectId(),
+		UserID:  uid,
 		Created: time.Now(),
 		Lasted:  time.Now(),
 		Token:   util.RandomString(15),
@@ -103,7 +103,7 @@ func (u *UserAuth) Insert(db *mgo.Database) error {
 }
 
 func (u *UserAuth) Remove(db *mgo.Database) error {
-	return db.C(global.ColUserAuth).RemoveId(u.Id)
+	return db.C(global.ColUserAuth).RemoveId(u.ID)
 }
 
 func (u *UserAuth) Update(db *mgo.Database) error {
@@ -112,5 +112,5 @@ func (u *UserAuth) Update(db *mgo.Database) error {
 			"lasted": time.Now(),
 		},
 	}
-	return db.C(global.ColUserAuth).UpdateId(u.Id, update)
+	return db.C(global.ColUserAuth).UpdateId(u.ID, update)
 }

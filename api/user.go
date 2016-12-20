@@ -29,7 +29,7 @@ func Login(ctx *gin.Context) {
 	ss := sessions.Default(ctx)
 	ss.Set("user", user)
 
-	ua := admin.NewUserAuth(user.Id, time.Now().Add(time.Hour*24*90))
+	ua := admin.NewUserAuth(user.ID, time.Now().Add(time.Hour*24*90))
 	if err := ua.Insert(db); err != nil {
 		GinError(ctx, 500, err)
 		return

@@ -79,7 +79,7 @@ func MWRequireAdmin(ctx *gin.Context) {
 	ua := cua.(*admin.UserAuth)
 
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
-	u, err := admin.GetUser(db, ua.UserId)
+	u, err := admin.GetUser(db, ua.UserID)
 	if err != nil {
 		GinError(ctx, 500, "cannot find user.")
 		return
@@ -117,13 +117,13 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 func MWLoadGithubApp(ctx *gin.Context) {
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
 	ghappK := &GithubApp{
-		ClientId:        "gh_client_id",
+		ClientID:        "gh_client_id",
 		ClientSecret:    "gh_client_secret",
 		AuthCallbackURL: "gh_auth_callback_url",
 	}
-	cid, err := admin.GetValue(db, ghappK.ClientId)
+	cid, err := admin.GetValue(db, ghappK.ClientID)
 	if err != nil {
-		GinError(ctx, 500, "require settings.", ghappK.ClientId)
+		GinError(ctx, 500, "require settings.", ghappK.ClientID)
 		return
 	}
 	sec, err := admin.GetValue(db, ghappK.ClientSecret)
@@ -138,7 +138,7 @@ func MWLoadGithubApp(ctx *gin.Context) {
 	}
 
 	ctx.Set(CtxGithubApp, &GithubApp{
-		ClientId:        cid,
+		ClientID:        cid,
 		ClientSecret:    sec,
 		AuthCallbackURL: callback,
 	})

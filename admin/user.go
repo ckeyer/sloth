@@ -25,7 +25,7 @@ func GetUser(db *mgo.Database, id bson.ObjectId) (*User, error) {
 }
 
 func (u *User) Registry(db *mgo.Database) (*User, error) {
-	u.Id = bson.NewObjectId()
+	u.ID = bson.NewObjectId()
 	u.Created = time.Now()
 	u.Updated = time.Now()
 	u.Role = types.RoleMember
@@ -80,7 +80,7 @@ func (u *User) Login(db *mgo.Database) (*User, error) {
 	}
 
 	exUser.LastLogin = time.Now()
-	err = db.C(global.ColUser).UpdateId(exUser.Id, bson.M{
+	err = db.C(global.ColUser).UpdateId(exUser.ID, bson.M{
 		"$set": bson.M{
 			"last_login": exUser.LastLogin,
 		},

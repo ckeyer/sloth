@@ -12,7 +12,7 @@ import (
 )
 
 type GithubApp struct {
-	ClientId        string
+	ClientID        string
 	ClientSecret    string
 	AuthCallbackURL string
 }
@@ -33,7 +33,7 @@ func GetAccessURL(ctx *gin.Context) {
 	u, _ := url.Parse("https://github.com/login/oauth/authorize")
 
 	query := u.Query()
-	query.Set("client_id", ghApp.ClientId)
+	query.Set("client_id", ghApp.ClientID)
 	query.Set("redirect_uri", ghApp.AuthCallbackURL)
 	scopes := []string{
 		"user:email",
@@ -61,7 +61,7 @@ func GHAuthCallback(ctx *gin.Context) {
 	u, _ := url.Parse("https://github.com/login/oauth/access_token")
 
 	query := u.Query()
-	query.Set("client_id", ghApp.ClientId)
+	query.Set("client_id", ghApp.ClientID)
 	query.Set("redirect_uri", ghApp.AuthCallbackURL)
 	query.Set("client_secret", ghApp.ClientSecret)
 	query.Set("code", code)
