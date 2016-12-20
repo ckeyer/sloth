@@ -12,6 +12,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/admin"
+	"github.com/ckeyer/sloth/gh"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 )
@@ -116,10 +117,10 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 
 func MWLoadGithubApp(ctx *gin.Context) {
 	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
-	ghappK := &GithubApp{
-		ClientID:        "gh_client_id",
-		ClientSecret:    "gh_client_secret",
-		AuthCallbackURL: "gh_auth_callback_url",
+	ghappK := &gh.App{
+		ClientID:     "gh_client_id",
+		ClientSecret: "gh_client_secret",
+		CallbackURL:  "gh_callback_url",
 	}
 	cid, err := admin.GetValue(db, ghappK.ClientID)
 	if err != nil {
@@ -131,15 +132,15 @@ func MWLoadGithubApp(ctx *gin.Context) {
 		GinError(ctx, 500, "require settings.", ghappK.ClientSecret)
 		return
 	}
-	callback, err := admin.GetValue(db, ghappK.AuthCallbackURL)
+	callback, err := admin.GetValue(db, ghappK.CallbackURL)
 	if err != nil {
-		GinError(ctx, 500, "require settings.", ghappK.AuthCallbackURL)
+		GinError(ctx, 500, "require settings.", ghappK.CallbackURL)
 		return
 	}
 
-	ctx.Set(CtxGithubApp, &GithubApp{
-		ClientID:        cid,
-		ClientSecret:    sec,
-		AuthCallbackURL: callback,
+	ctx.Set(CtxGithubApp, &gh.App{
+		ClientID:     cid,
+		ClientSecret: sec,
+		CallbackURL:  callback,
 	})
 }

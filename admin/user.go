@@ -24,6 +24,20 @@ func GetUser(db *mgo.Database, id bson.ObjectId) (*User, error) {
 	return u, nil
 }
 
+func GetUserByGHAccount(db *mgo.Database, id int) (*User, error) {
+	u := &User{}
+	query := bson.M{
+		"github.id": id,
+	}
+	err := db.C(global.ColUser).Find(query).One(u)
+	if err != nil {
+		log.Errorf("find user by github user id %s failed, %s", id, err)
+		return nil, err
+	}
+
+	return u, nil
+}
+
 func (u *User) Registry(db *mgo.Database) (*User, error) {
 	u.ID = bson.NewObjectId()
 	u.Created = time.Now()
@@ -44,6 +58,34 @@ func (u *User) Registry(db *mgo.Database) (*User, error) {
 		return nil, err
 	}
 	u.Password = passwd
+
+	err = db.C(global.ColUser).Insert(u)
+	if err != nil {
+		log.Errorf("insert user %+v failed, %s", u, err)
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (u *User) RegistryByGHAccount(db *mgo.Database, ghAcc *types.GithubAccount) (*User, error) {
+	u = &User{
+		ID:            bson.NewObjectId(),
+		GithubAccount: ghAcc,
+		Name:          ghAcc.Login,
+		Email:         ghAcc.Email,
+		Created:       time.Now(),
+		Updated:       time.Now(),
+		Role:          types.RoleMember,
+	}
+
+	status, err := Status(db)
+	if err != nil {
+		return nil, err
+	}
+	if status["user"].(int) == 0 {
+		u.Role = types.RoleAdmin
+	}
 
 	err = db.C(global.ColUser).Insert(u)
 	if err != nil {
@@ -95,4 +137,20 @@ func (u *User) Login(db *mgo.Database) (*User, error) {
 
 func (u *User) IsAdmin() bool {
 	return u.Role == types.RoleAdmin
+}
+
+func (u *User) BindGithub(db *mgo.Database, ghAccount *types.GithubAccount) (*User, error) {
+	query := bson.M{
+		"$set": bson.M{
+			"github": ghAccount,
+		},
+	}
+	err := db.C(global.ColUser).UpdateId(u.ID, query)
+	if err != nil {
+		return nil, err
+	}
+
+	u.GithubAccount = ghAccount
+
+	return u, nil
 }

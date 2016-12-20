@@ -35,6 +35,7 @@ type WechatAccount struct {
 type GithubAccount struct {
 	ID       int    `json:"id" bson:"id"`
 	Name     string `json:"name" bson:"name"`
+	Login    string `json:"login" bson:"login"`
 	Email    string `json:"email" bson:"email"`
 	Location string `json:"location" bson:"location"`
 	Type     string `json:"type" bson:"type"`

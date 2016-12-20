@@ -47,7 +47,9 @@ func apiRouter(r *gin.RouterGroup) {
 	func(r *gin.RouterGroup) {
 		r.POST("/", TODO)
 		r.GET("/auth", GHAuthCallback)
+		r.GET("/bind", GHBindCallback)
 		r.GET("/access_url", GetAccessURL)
+		r.GET("/bind_url", GetBindURL)
 	}(r.Group("/github", MWLoadGithubApp))
 }
 

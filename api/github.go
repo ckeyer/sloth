@@ -1,21 +1,15 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
-	"net/url"
-	"strings"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/admin"
 	"github.com/ckeyer/sloth/gh"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
 )
-
-type GithubApp struct {
-	ClientID        string
-	ClientSecret    string
-	AuthCallbackURL string
-}
 
 func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
 	evt := req.Header.Get("X-GitHub-Event")
@@ -29,65 +23,84 @@ func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
 
 // GET /github/access_url
 func GetAccessURL(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*GithubApp)
-	u, _ := url.Parse("https://github.com/login/oauth/authorize")
-
-	query := u.Query()
-	query.Set("client_id", ghApp.ClientID)
-	query.Set("redirect_uri", ghApp.AuthCallbackURL)
-	scopes := []string{
-		"user:email",
-		"public_repo",
-		"repo",
-		"repo_deployment",
-		"repo:status",
-		"admin:repo_hook",
-		"admin:org_hook",
-		"admin:org",
-		// "admin:public_key",
-	}
-	query.Add("scope", strings.Join(scopes, ","))
-
-	u.RawQuery = query.Encode()
-
+	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	u := ghApp.AccessURL("auth")
 	GinMessage(ctx, 200, u.String())
 }
 
-// POST /github/auth
+// GET /github/bind_url
+func GetBindURL(ctx *gin.Context) {
+	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	u := ghApp.AccessURL("bind")
+	GinMessage(ctx, 200, u.String())
+}
+
+// GET /github/auth
 func GHAuthCallback(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*GithubApp)
+	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	code := ctx.Query("code")
+	token, err := ghApp.GetToken(code)
+	if err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+
+	ghAccount, err := ghApp.GetUserAccount(token)
+	if err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+	log.Debugf("GHAuthCallback: %+v", ghAccount)
+
+	statusCode := 200
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	user, err := admin.GetUserByGHAccount(db, ghAccount.ID)
+	if err != nil && err != mgo.ErrNotFound {
+		log.Errorf("GHAuthCallback: unknown error, %s", err)
+		GinError(ctx, 500, err)
+		return
+	} else if err == mgo.ErrNotFound {
+		// 未查到，注册新用户
+		user, err = (*admin.User).RegistryByGHAccount(nil, db, ghAccount)
+		if err != nil {
+			log.Errorf("GHAuthCallback: registry user failed, %s", err)
+			GinError(ctx, 500, err)
+			return
+		}
+		log.Debugf("GHAuthCallback: registry a user by github account, %+v", user)
+		statusCode = 201
+	}
+
+	ua := admin.NewUserAuth(user.ID, time.Now().Add(time.Hour*24*90))
+	if err := ua.Insert(db); err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+
+	ret := map[string]interface{}{
+		"user":      user,
+		"user_auth": ua,
+	}
+	ctx.JSON(statusCode, ret)
+}
+
+// GET /github/bind
+func GHBindCallback(ctx *gin.Context) {
+	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
 	code := ctx.Query("code")
 
-	u, _ := url.Parse("https://github.com/login/oauth/access_token")
-
-	query := u.Query()
-	query.Set("client_id", ghApp.ClientID)
-	query.Set("redirect_uri", ghApp.AuthCallbackURL)
-	query.Set("client_secret", ghApp.ClientSecret)
-	query.Set("code", code)
-	u.RawQuery = query.Encode()
-
-	req, _ := http.NewRequest("POST", u.String(), nil)
-	req.Header.Set("Accept", "application/json")
-	resp, err := http.DefaultClient.Do(req)
+	token, err := ghApp.GetToken(code)
 	if err != nil {
-		log.Errorf("get github-app token failed, %s", err.Error())
 		GinError(ctx, 500, err)
 		return
 	}
 
-	var ghToken struct {
-		AccessToken string `json:"access_token"`
-		TokenType   string `json:"token_type"`
-		Scope       string `json:"scope"`
-	}
-	err = json.NewDecoder(resp.Body).Decode(&ghToken)
+	ghAccount, err := ghApp.GetUserAccount(token)
 	if err != nil {
-		log.Errorf("read github-app token failed, %s", err.Error())
 		GinError(ctx, 500, err)
 		return
 	}
 
-	log.Debugf("get github-app token: %+v", ghToken)
-	ctx.Redirect(302, "/")
+	log.Debugf("GHBindCallback: %+v", ghAccount)
+	ctx.Redirect(302, "/user")
 }
