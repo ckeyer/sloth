@@ -25,7 +25,6 @@ func New() *Views {
 }
 
 func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Debug("route in static file")
 	name := strings.TrimLeft(r.URL.Path, "/")
 	if name == "" {
 		name = v.Index

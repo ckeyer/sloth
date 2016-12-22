@@ -32,12 +32,21 @@ func GinLogger(ctx *gin.Context) {
 	start := time.Now()
 	ctx.Next()
 
-	log.WithFields(log.Fields{
+	logent := log.WithFields(log.Fields{
 		"Method": ctx.Request.Method,
 		"URL":    ctx.Request.URL.Path,
+		"Remote": ctx.Request.RemoteAddr,
 		"Status": ctx.Writer.Status(),
 		"Period": fmt.Sprintf("%.6f", time.Now().Sub(start).Seconds()),
-	}).Debug("bye jack.")
+	})
+
+	for _, prefix := range []string{API_PREFIX, WEB_HOOKS} {
+		if strings.HasPrefix(ctx.Request.URL.Path, prefix) {
+			logent.Info("bye jack.")
+			return
+		}
+	}
+	logent.Debug("bye jack.")
 }
 
 func MWRequireLogin(ctx *gin.Context) {

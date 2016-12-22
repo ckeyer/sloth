@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 	"time"
 
@@ -38,7 +40,11 @@ func GetBindURL(ctx *gin.Context) {
 // GET /github/auth
 func GHAuthCallback(ctx *gin.Context) {
 	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
-	code := ctx.Query("code")
+	code := getGHCode(ctx.Request.Body)
+	if code == "" {
+		GinError(ctx, 400, "invalid code")
+		return
+	}
 	token, err := ghApp.GetToken(code)
 	if err != nil {
 		GinError(ctx, 500, err)
@@ -87,7 +93,11 @@ func GHAuthCallback(ctx *gin.Context) {
 // GET /github/bind
 func GHBindCallback(ctx *gin.Context) {
 	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
-	code := ctx.Query("code")
+	code := getGHCode(ctx.Request.Body)
+	if code == "" {
+		GinError(ctx, 400, "invalid code")
+		return
+	}
 
 	token, err := ghApp.GetToken(code)
 	if err != nil {
@@ -103,4 +113,20 @@ func GHBindCallback(ctx *gin.Context) {
 
 	log.Debugf("GHBindCallback: %+v", ghAccount)
 	ctx.Redirect(302, "/user")
+}
+
+// 获取body中的code
+func getGHCode(r io.Reader) string {
+	v := map[string]string{}
+	err := json.NewDecoder(r).Decode(&v)
+	if err != nil {
+		log.Errorf("invalid code %s", err.Error())
+		return ""
+	}
+	if code, ok := v["code"]; !ok {
+		log.Errorf("required code")
+		return ""
+	} else {
+		return code
+	}
 }

@@ -99,11 +99,11 @@ func (a *App) GetUserAccount(token string) (*types.GithubAccount, error) {
 	}
 	return &types.GithubAccount{
 		ID:       *user.ID,
-		Login:    *user.Login,
-		Name:     *user.Name,
-		Email:    *user.Email,
-		Location: *user.Location,
-		Type:     *user.Type,
+		Login:    mustString(user.Login),
+		Name:     mustString(user.Name),
+		Email:    mustString(user.Email),
+		Location: mustString(user.Location),
+		Type:     mustString(user.Type),
 
 		Token: types.Password(token),
 	}, nil

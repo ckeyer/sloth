@@ -33,6 +33,7 @@ func apiRouter(r *gin.RouterGroup) {
 
 	/// require login.
 	func(r *gin.RouterGroup) {
+		r.GET("/user/:id", GetUser)
 		r.DELETE("/logout", Logout)
 	}(r.Group("", MWRequireLogin))
 
@@ -46,8 +47,8 @@ func apiRouter(r *gin.RouterGroup) {
 	/// /github/...
 	func(r *gin.RouterGroup) {
 		r.POST("/", TODO)
-		r.GET("/auth", GHAuthCallback)
-		r.GET("/bind", GHBindCallback)
+		r.POST("/auth", GHAuthCallback)
+		r.POST("/bind", GHBindCallback)
 		r.GET("/access_url", GetAccessURL)
 		r.GET("/bind_url", GetBindURL)
 	}(r.Group("/github", MWLoadGithubApp))

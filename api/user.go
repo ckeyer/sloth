@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func Login(ctx *gin.Context) {
@@ -75,4 +76,21 @@ func Registry(ctx *gin.Context) {
 	}
 
 	ctx.JSON(201, ret)
+}
+
+func GetUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if !bson.IsObjectIdHex(id) {
+		GinError(ctx, 400, "invalid user id")
+		return
+	}
+
+	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	u, err := admin.GetUser(db, bson.ObjectIdHex(id))
+	if err != nil {
+		GinError(ctx, 500, err)
+		return
+	}
+
+	ctx.JSON(200, u)
 }
