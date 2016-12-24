@@ -17,10 +17,10 @@ const (
 	API_PREFIX = "/api"
 	WEB_HOOKS  = "/webhooks"
 
-	CtxMgoDB     = "mgodb"
-	CtxUserAuth  = "userauth"
-	CtxUser      = "user"
-	CtxGithubApp = "githubapp"
+	CtxKeyMgoDB     = "mgodb"
+	CtxKeyUserAuth  = "userauth"
+	CtxKeyUser      = "user"
+	CtxKeyGithubApp = "githubapp"
 )
 
 func Serve(listenAddr string, db *mgo.Database) {

@@ -59,7 +59,7 @@ func ping(ctx *gin.Context) {
 }
 
 func GetStatus(ctx *gin.Context) {
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ret, err := admin.Status(db)
 	if err != nil {
 		log.Error("get status failed", err)

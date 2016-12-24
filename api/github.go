@@ -25,21 +25,21 @@ func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
 
 // GET /github/access_url
 func GetAccessURL(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	ghApp := ctx.MustGet(CtxKeyGithubApp).(*gh.App)
 	u := ghApp.AccessURL("auth")
 	GinMessage(ctx, 200, u.String())
 }
 
 // GET /github/bind_url
 func GetBindURL(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	ghApp := ctx.MustGet(CtxKeyGithubApp).(*gh.App)
 	u := ghApp.AccessURL("bind")
 	GinMessage(ctx, 200, u.String())
 }
 
 // GET /github/auth
 func GHAuthCallback(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	ghApp := ctx.MustGet(CtxKeyGithubApp).(*gh.App)
 	code := getGHCode(ctx.Request.Body)
 	if code == "" {
 		GinError(ctx, 400, "invalid code")
@@ -59,7 +59,7 @@ func GHAuthCallback(ctx *gin.Context) {
 	log.Debugf("GHAuthCallback: %+v", ghAccount)
 
 	statusCode := 200
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	user, err := admin.GetUserByGHAccount(db, ghAccount.ID)
 	if err != nil && err != mgo.ErrNotFound {
 		log.Errorf("GHAuthCallback: unknown error, %s", err)
@@ -92,7 +92,7 @@ func GHAuthCallback(ctx *gin.Context) {
 
 // GET /github/bind
 func GHBindCallback(ctx *gin.Context) {
-	ghApp := ctx.MustGet(CtxGithubApp).(*gh.App)
+	ghApp := ctx.MustGet(CtxKeyGithubApp).(*gh.App)
 	code := getGHCode(ctx.Request.Body)
 	if code == "" {
 		GinError(ctx, 400, "invalid code")

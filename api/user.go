@@ -20,7 +20,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	user, err := u.Login(db)
 	if err != nil {
 		GinError(ctx, 500, err)
@@ -44,8 +44,8 @@ func Login(ctx *gin.Context) {
 }
 
 func Logout(ctx *gin.Context) {
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
-	ua := ctx.MustGet(CtxUserAuth).(*admin.UserAuth)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
+	ua := ctx.MustGet(CtxKeyUserAuth).(*admin.UserAuth)
 
 	if err := ua.Remove(db); err != nil {
 		GinError(ctx, 500, err)
@@ -68,7 +68,7 @@ func Registry(ctx *gin.Context) {
 		return
 	}
 
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ret, err := u.Registry(db)
 	if err != nil {
 		GinError(ctx, 400, err)
@@ -85,7 +85,7 @@ func GetUser(ctx *gin.Context) {
 		return
 	}
 
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	u, err := admin.GetUser(db, bson.ObjectIdHex(id))
 	if err != nil {
 		GinError(ctx, 500, err)

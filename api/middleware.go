@@ -67,7 +67,7 @@ func MWRequireLogin(ctx *gin.Context) {
 	}
 
 	apiKey, timestamp, sign := signSli[0], signSli[1], signSli[2]
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 
 	ua, err := admin.AuthSignature(db, apiKey, timestamp, sign)
 	if err != nil {
@@ -75,12 +75,12 @@ func MWRequireLogin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set(CtxUserAuth, ua)
+	ctx.Set(CtxKeyUserAuth, ua)
 }
 
 // 需要管理员权限，需要在使用 MWRequireLogin 之后
 func MWRequireAdmin(ctx *gin.Context) {
-	cua, ok := ctx.Get(CtxUserAuth)
+	cua, ok := ctx.Get(CtxKeyUserAuth)
 	if !ok {
 		log.Errorf("show use MWRequireLogin before")
 		GinError(ctx, 401, "need login.")
@@ -88,7 +88,7 @@ func MWRequireAdmin(ctx *gin.Context) {
 	}
 	ua := cua.(*admin.UserAuth)
 
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	u, err := admin.GetUser(db, ua.UserID)
 	if err != nil {
 		GinError(ctx, 500, "cannot find user.")
@@ -100,7 +100,7 @@ func MWRequireAdmin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set(CtxUser, u)
+	ctx.Set(CtxKeyUser, u)
 }
 
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
@@ -125,7 +125,7 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 }
 
 func MWLoadGithubApp(ctx *gin.Context) {
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ghappK := &gh.App{
 		ClientID:     "gh_client_id",
 		ClientSecret: "gh_client_secret",
@@ -147,7 +147,7 @@ func MWLoadGithubApp(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set(CtxGithubApp, &gh.App{
+	ctx.Set(CtxKeyGithubApp, &gh.App{
 		ClientID:     cid,
 		ClientSecret: sec,
 		CallbackURL:  callback,

@@ -21,7 +21,7 @@ func GetSettings(ctx *gin.Context) {
 		GinError(ctx, 400, "invalid key")
 		return
 	}
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 
 	log.Debugf("get settings, %+v", keys)
 	ret, err := admin.GetValues(db, keys...)
@@ -42,7 +42,7 @@ func AddSettings(ctx *gin.Context) {
 		return
 	}
 
-	db := ctx.MustGet(CtxMgoDB).(*mgo.Database)
+	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	for k, v := range kv {
 		err = admin.SetKV(db, k, v)
 		if err != nil {
