@@ -17,8 +17,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// types.UserAuth
 type UserAuth types.UserAuth
 
+// NewUserAuth： 为用户登录认证新建一个Token
 func NewUserAuth(uid bson.ObjectId, expired time.Time) *UserAuth {
 	return &UserAuth{
 		ID:      bson.NewObjectId(),
@@ -30,6 +32,7 @@ func NewUserAuth(uid bson.ObjectId, expired time.Time) *UserAuth {
 	}
 }
 
+// AuthSignature: 验证用户Token
 func AuthSignature(db *mgo.Database, apiKey, timestamp, sign string) (*UserAuth, error) {
 	if !bson.IsObjectIdHex(apiKey) {
 		return nil, fmt.Errorf("invalid apiKey.")
@@ -98,14 +101,17 @@ func AuthSignature(db *mgo.Database, apiKey, timestamp, sign string) (*UserAuth,
 	return ua, nil
 }
 
+// Insert
 func (u *UserAuth) Insert(db *mgo.Database) error {
 	return db.C(global.ColUserAuth).Insert(u)
 }
 
+// Remove
 func (u *UserAuth) Remove(db *mgo.Database) error {
 	return db.C(global.ColUserAuth).RemoveId(u.ID)
 }
 
+// Update
 func (u *UserAuth) Update(db *mgo.Database) error {
 	update := bson.M{
 		"$set": bson.M{

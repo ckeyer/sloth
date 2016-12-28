@@ -7,20 +7,23 @@ import (
 )
 
 const (
+	// github's url
 	GithubURL = "https://github.com/"
 	WorkDir   = "/tmp/go-ci/src/github.com/"
 )
 
+// ShellGit
 type ShellGit struct {
 }
 
-func (s *ShellGit) Clone(full_name, ref string) (string, error) {
-	path := WorkDir + full_name
+// Clone
+func (s *ShellGit) Clone(fullName, ref string) (string, error) {
+	path := WorkDir + fullName
 	if err := s.initDirPath(path); err != nil {
 		return "", err
 	}
 
-	repo := GithubURL + full_name
+	repo := GithubURL + fullName
 	cmd := exec.Command("git", "clone", repo, "-b", ref, path)
 	_, err := cmd.CombinedOutput()
 	if err != nil {

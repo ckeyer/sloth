@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// Status ...
 func Status(db *mgo.Database) (map[string]interface{}, error) {
 	users, err := db.C(global.ColUser).Find(nil).Count()
 	if err != nil {

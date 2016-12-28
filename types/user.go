@@ -12,6 +12,7 @@ const (
 	RoleGuest  = "guest"
 )
 
+// User:
 type User struct {
 	ID       bson.ObjectId `json:"id" bson:"_id"`
 	Name     string        `json:"name" bson:"name"`
@@ -28,10 +29,12 @@ type User struct {
 	WechatAccount *WechatAccount `json:"wechat,omitempty" bson:"wechat,omitempty"`
 }
 
+// WechatAccount:
 type WechatAccount struct {
 	Name string `json:"name" bson:"name"`
 }
 
+// GithubAccount:
 type GithubAccount struct {
 	ID       int    `json:"id" bson:"id"`
 	Name     string `json:"name" bson:"name"`
@@ -45,6 +48,7 @@ type GithubAccount struct {
 	Token     Password `json:"token" bson:"token"`
 }
 
+// UserAuth:
 type UserAuth struct {
 	ID      bson.ObjectId `json:"id" bson:"_id"`
 	UserID  bson.ObjectId `json:"user_id" bson:"user_id"`

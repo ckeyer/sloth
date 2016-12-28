@@ -7,11 +7,13 @@ import (
 	"time"
 )
 
+// JobManage:
 type JobManage struct {
 	sync.Mutex
 	Jobs map[string]Job
 }
 
+// Add
 func (jm *JobManage) Add(job Job) string {
 	var jobID string
 	for {
@@ -24,6 +26,7 @@ func (jm *JobManage) Add(job Job) string {
 	return jobID
 }
 
+// Del
 func (jm *JobManage) Del(job_id string) {
 	if job, exi := jm.Jobs[job_id]; exi {
 		job.Kill()

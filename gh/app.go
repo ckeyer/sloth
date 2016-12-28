@@ -12,16 +12,19 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// App: github App
 type App struct {
 	ClientID     string
 	ClientSecret string
 	CallbackURL  string
 }
 
+// AuthURL
 func (a *App) AuthURL() string {
 	return strings.TrimSuffix(a.CallbackURL, "/") + "/auth"
 }
 
+// BindURL
 func (a *App) BindURL() string {
 	return strings.TrimSuffix(a.CallbackURL, "/") + "/bind"
 }
@@ -54,6 +57,7 @@ func (a *App) AccessURL(use string) *url.URL {
 	return u
 }
 
+// GetToken
 func (a *App) GetToken(code string) (string, error) {
 	u, _ := url.Parse("https://github.com/login/oauth/access_token")
 
@@ -85,6 +89,7 @@ func (a *App) GetToken(code string) (string, error) {
 	return ghToken.AccessToken, nil
 }
 
+// GetUserAccount
 func (a *App) GetUserAccount(token string) (*types.GithubAccount, error) {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},

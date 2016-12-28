@@ -14,15 +14,18 @@ import (
 )
 
 const (
+	// royter prefix
 	API_PREFIX = "/api"
 	WEB_HOOKS  = "/webhooks"
 
+	// gin.Context.Set key
 	CtxKeyMgoDB     = "mgodb"
 	CtxKeyUserAuth  = "userauth"
 	CtxKeyUser      = "user"
 	CtxKeyGithubApp = "githubapp"
 )
 
+// Serve: main serve.
 func Serve(listenAddr string, db *mgo.Database) {
 
 	gr := NewGin()

@@ -4,17 +4,20 @@ import (
 	"time"
 )
 
+// Job:
 type Job interface {
 	Run() error
 	Kill()
 }
 
+// JobManager:
 type JobManager interface {
 	Add(Job) string
 	Del(string)
 	GetStatus(int) *Status
 }
 
+// Status:
 type Status struct {
 	Status    string    `json:"status"`
 	Err       string    `json:"status,omitempty"`

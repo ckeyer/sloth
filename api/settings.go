@@ -10,6 +10,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// GET /settings/:key
 func GetSettings(ctx *gin.Context) {
 	var keys []string
 	if ctx.Param("key") != "" {
@@ -33,6 +34,8 @@ func GetSettings(ctx *gin.Context) {
 	ctx.JSON(200, ret)
 }
 
+// POST /settings
+// body: ["key": "value"]
 func AddSettings(ctx *gin.Context) {
 	kv := map[string]string{}
 	err := json.NewDecoder(ctx.Request.Body).Decode(&kv)

@@ -20,12 +20,14 @@ func init() {
 	setsManage.kv = map[string]string{}
 }
 
+// Setting ...
 type Setting struct {
 	Key     string    `json:"key" bson:"key"`
 	Value   string    `json:"value" bson:"value"`
 	Created time.Time `json:"created" bson:"created"`
 }
 
+// SetKV ...
 func SetKV(db *mgo.Database, k, v string) error {
 	s := &Setting{
 		Key:     k,
@@ -49,6 +51,7 @@ func SetKV(db *mgo.Database, k, v string) error {
 	return nil
 }
 
+// GetValue ...
 func GetValue(db *mgo.Database, k string) (string, error) {
 	setsManage.Lock()
 	defer setsManage.Unlock()
@@ -66,7 +69,7 @@ func GetValue(db *mgo.Database, k string) (string, error) {
 	return s.Value, nil
 }
 
-// 查询已存在的，对不存在的报错
+// GetValues 查询已存在的，对不存在的报错
 func GetValues(db *mgo.Database, ks ...string) (map[string]string, error) {
 	ret := map[string]string{}
 	for _, key := range ks {
@@ -80,7 +83,7 @@ func GetValues(db *mgo.Database, ks ...string) (map[string]string, error) {
 	return ret, nil
 }
 
-// 查询已存在的，对不存在的不报错
+// GetKVs 查询已存在的，对不存在的不报错
 func GetKVs(db *mgo.Database, ks ...string) (map[string]string, error) {
 	query := bson.M{
 		"key": bson.M{

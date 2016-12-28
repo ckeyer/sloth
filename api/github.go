@@ -13,6 +13,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// GithubWebhooks
 func GithubWebhooks(rw http.ResponseWriter, req *http.Request) {
 	evt := req.Header.Get("X-GitHub-Event")
 	if evt == "" {

@@ -17,6 +17,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// CorsHandle: set http response header
 func CorsHandle(ctx *gin.Context) {
 	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limt,Offset,Origin,Accept,X-Signature")
 	ctx.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
@@ -28,6 +29,7 @@ func CorsHandle(ctx *gin.Context) {
 	}
 }
 
+// GinLogger
 func GinLogger(ctx *gin.Context) {
 	start := time.Now()
 	ctx.Next()
@@ -49,6 +51,7 @@ func GinLogger(ctx *gin.Context) {
 	logent.Debug("bye jack.")
 }
 
+// MWRequireLogin
 func MWRequireLogin(ctx *gin.Context) {
 	xsign := ctx.Request.Header.Get("X-Signature")
 	if xsign == "" {
@@ -103,6 +106,7 @@ func MWRequireAdmin(ctx *gin.Context) {
 	ctx.Set(CtxKeyUser, u)
 }
 
+// MWAuthGithubServer
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -124,6 +128,7 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	log.Debugf("github server auth passing")
 }
 
+// MWLoadGithubApp
 func MWLoadGithubApp(ctx *gin.Context) {
 	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ghappK := &gh.App{

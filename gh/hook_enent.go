@@ -13,6 +13,7 @@ const (
 	EVT_COMMIT_COMMENT = "commit_comment"
 )
 
+// GetEvent
 func GetEvent(evt string, data io.Reader) {
 	var ret interface{}
 	switch evt {

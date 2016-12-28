@@ -11,6 +11,7 @@ var (
 	client *dockerpkg.Client
 )
 
+// GetClient:
 func GetClient() *dockerpkg.Client {
 	if client != nil {
 		return client
@@ -20,6 +21,7 @@ func GetClient() *dockerpkg.Client {
 	return nil
 }
 
+// Connect
 func Connect(endpoint string) (*dockerpkg.Client, error) {
 	cli, err := dockerpkg.NewClient(endpoint)
 	if err != nil {

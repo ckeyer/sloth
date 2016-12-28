@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	// mgo.Collection.Name
 	ColUser     = "user"
 	ColProject  = "project"
 	ColWebhook  = "webhook"
@@ -51,6 +52,7 @@ func mgoIndexes() mongo.MgoIndexs {
 	}
 }
 
+// InitDB
 func InitDB(url string) (*mgo.Database, error) {
 	db, err := mongo.NewMdbWithURL(url)
 	if err != nil {

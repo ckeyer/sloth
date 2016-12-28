@@ -14,16 +14,19 @@ var (
 	uiDir = "assets/"
 )
 
+// Views
 type Views struct {
 	Names map[string]struct{}
 	Index string
 }
 
+// New
 func New() *Views {
 	v := &Views{make(map[string]struct{}), "index.html"}
 	return v
 }
 
+// ServeHTTP: webui
 func (v *Views) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	name := strings.TrimLeft(r.URL.Path, "/")
 	if name == "" {

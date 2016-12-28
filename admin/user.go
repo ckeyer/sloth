@@ -11,8 +11,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// User ...
 type User types.User
 
+// GetUser ...
 func GetUser(db *mgo.Database, id bson.ObjectId) (*User, error) {
 	u := &User{}
 	err := db.C(global.ColUser).FindId(id).One(u)
@@ -24,6 +26,7 @@ func GetUser(db *mgo.Database, id bson.ObjectId) (*User, error) {
 	return u, nil
 }
 
+// GetUserByGHAccount ...
 func GetUserByGHAccount(db *mgo.Database, id int) (*User, error) {
 	u := &User{}
 	query := bson.M{
@@ -31,13 +34,14 @@ func GetUserByGHAccount(db *mgo.Database, id int) (*User, error) {
 	}
 	err := db.C(global.ColUser).Find(query).One(u)
 	if err != nil {
-		log.Errorf("find user by github user id %s failed, %s", id, err)
+		log.Errorf("find user by github user id %v failed, %s", id, err)
 		return nil, err
 	}
 
 	return u, nil
 }
 
+// Registry ...
 func (u *User) Registry(db *mgo.Database) (*User, error) {
 	u.ID = bson.NewObjectId()
 	u.Created = time.Now()
@@ -68,6 +72,7 @@ func (u *User) Registry(db *mgo.Database) (*User, error) {
 	return u, nil
 }
 
+// RegistryByGHAccount ...
 func (u *User) RegistryByGHAccount(db *mgo.Database, ghAcc *types.GithubAccount) (*User, error) {
 	u = &User{
 		ID:            bson.NewObjectId(),
@@ -96,6 +101,7 @@ func (u *User) RegistryByGHAccount(db *mgo.Database, ghAcc *types.GithubAccount)
 	return u, nil
 }
 
+// Login ...
 func (u *User) Login(db *mgo.Database) (*User, error) {
 	exUser := &User{}
 	query := bson.M{}
@@ -135,10 +141,12 @@ func (u *User) Login(db *mgo.Database) (*User, error) {
 	return exUser, nil
 }
 
+// IsAdmin ...
 func (u *User) IsAdmin() bool {
 	return u.Role == types.RoleAdmin
 }
 
+// BindGithub ...
 func (u *User) BindGithub(db *mgo.Database, ghAccount *types.GithubAccount) (*User, error) {
 	query := bson.M{
 		"$set": bson.M{

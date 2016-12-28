@@ -12,6 +12,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// Login: POST /login
 func Login(ctx *gin.Context) {
 	u := new(admin.User)
 	err := json.NewDecoder(ctx.Request.Body).Decode(u)
@@ -43,6 +44,7 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(200, ret)
 }
 
+// Logout: DELETE /logout
 func Logout(ctx *gin.Context) {
 	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ua := ctx.MustGet(CtxKeyUserAuth).(*admin.UserAuth)
@@ -55,6 +57,7 @@ func Logout(ctx *gin.Context) {
 	GinMessage(ctx, 200, "ok")
 }
 
+// Registry: POST /signup
 func Registry(ctx *gin.Context) {
 	u := new(admin.User)
 	err := json.NewDecoder(ctx.Request.Body).Decode(u)
@@ -78,6 +81,7 @@ func Registry(ctx *gin.Context) {
 	ctx.JSON(201, ret)
 }
 
+// GetUser: GET /user/:id
 func GetUser(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if !bson.IsObjectIdHex(id) {

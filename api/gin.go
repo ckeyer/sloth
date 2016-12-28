@@ -35,6 +35,7 @@ func GinH(h interface{}) gin.HandlerFunc {
 	}
 }
 
+// SetMgoDB: ...
 func SetMgoDB(db *mgo.Database) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		newDb := db.Session.Clone().DB(db.Name)
@@ -45,6 +46,7 @@ func SetMgoDB(db *mgo.Database) gin.HandlerFunc {
 	}
 }
 
+// GinError: ...
 func GinError(ctx *gin.Context, status int, err ...interface{}) {
 	defer func() {
 		ctx.Abort()
@@ -66,6 +68,7 @@ func GinError(ctx *gin.Context, status int, err ...interface{}) {
 	ctx.JSON(status, ret)
 }
 
+// GinMessage: ...
 func GinMessage(ctx *gin.Context, status int, msg ...interface{}) {
 	defer func() {
 		ctx.Abort()

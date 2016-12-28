@@ -20,7 +20,7 @@ func NotFound(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// /webhooks/...
+// WebhookRouter: /webhooks/...
 func WebhookRouter(r *gin.RouterGroup) {
 	r.POST("/github", GinH(MWAuthGithubServer), GinH(GithubWebhooks))
 }
@@ -58,6 +58,7 @@ func ping(ctx *gin.Context) {
 	GinMessage(ctx, 200, "hi")
 }
 
+// GET /status
 func GetStatus(ctx *gin.Context) {
 	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ret, err := admin.Status(db)
@@ -70,6 +71,7 @@ func GetStatus(ctx *gin.Context) {
 	ctx.JSON(200, ret)
 }
 
+// TODO...
 func TODO(ctx *gin.Context) {
 	bs, _ := ioutil.ReadAll(ctx.Request.Body)
 
