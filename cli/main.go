@@ -138,6 +138,13 @@ var (
 			debugFlag,
 			outputFlag,
 		},
+		Before: func(ctx *cli.Context) error {
+			return nil
+		},
+		Action: func(ctx *cli.Context) error {
+			log.Infof("args: %v", ctx.Args())
+			return nil
+		},
 	}
 )
 
@@ -169,6 +176,7 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			runCmd,
+			evaluateCmd,
 		},
 		Action: func(ctx *cli.Context) error {
 			return cli.ShowAppHelp(ctx)

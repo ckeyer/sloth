@@ -26,13 +26,11 @@ local:
 test:
 	go test -ldflags="$(LD_FLAGS)" $$(go list ./... |grep -v "vendor")
 
-run:
+run: local
 	MGO_URL=$(MGO_URL) \
 	DEBUG=true \
 	UI_DIR="../sloth-ui/dist" \
-	go run -a -ldflags="$(LD_FLAGS)" cli/main.go run
-	# ./bundles/$(APP) run
-	
+	bundles/$(APP) eval ./cli/
 
 dev:
 	docker run --rm -it \
