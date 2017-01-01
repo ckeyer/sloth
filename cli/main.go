@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/api"
+	"github.com/ckeyer/sloth/checks"
 	"github.com/ckeyer/sloth/docker"
 	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/version"
@@ -143,6 +144,12 @@ var (
 		},
 		Action: func(ctx *cli.Context) error {
 			log.Infof("args: %v", ctx.Args())
+			dir, files, err := checks.GetDirAndFiles(ctx.Args().Slice())
+			if err != nil {
+				return err
+			}
+
+			checks.RunChecks(dir, files)
 			return nil
 		},
 	}
