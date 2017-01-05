@@ -30,7 +30,7 @@ run: local
 	MGO_URL=$(MGO_URL) \
 	DEBUG=true \
 	UI_DIR="../sloth-ui/dist" \
-	bundles/$(APP) eval ./cli/
+	bundles/$(APP) eval ./
 
 dev:
 	docker run --rm -it \

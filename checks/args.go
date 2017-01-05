@@ -3,8 +3,6 @@ package checks
 import (
 	"fmt"
 	"os"
-
-	"github.com/gojp/goreportcard/check"
 )
 
 // GetDirAndFiles return dir, filenames, error
@@ -33,7 +31,7 @@ func GetDirAndFiles(args []string) (string, []string, error) {
 	}
 	if len(files) == 0 {
 		var err error
-		files, _, err = check.GoFiles(dir)
+		files, _, err = GoFiles(dir)
 		if err != nil {
 			return "", nil, err
 		}

@@ -36,9 +36,9 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 	}
 
 	checks := []check.Check{
-		// check.GoFmt{Dir: dir, Filenames: filenames},
-		check.GoVet{Dir: dir, Filenames: filenames},
-		// check.GoLint{Dir: dir, Filenames: filenames},
+		check.GoFmt{Dir: dir, Filenames: filenames},
+		// check.GoVet{Dir: dir, Filenames: filenames},
+		check.GoLint{Dir: dir, Filenames: filenames},
 		// check.GoCyclo{Dir: dir, Filenames: filenames},
 		// check.License{Dir: dir, Filenames: []string{}},
 		// check.Misspell{Dir: dir, Filenames: filenames},
@@ -78,7 +78,13 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 	var issues = make(map[string]bool)
 	for i := 0; i < len(checks); i++ {
 		s := <-ch
-		log.Infof("%+v", s)
+		log.WithFields(log.Fields{
+			"desc":       s.Description,
+			"name":       s.Name,
+			"error":      s.Error,
+			"weight":     s.Weight,
+			"percentage": s.Percentage,
+		}).Infof("%+v", s.FileSummaries)
 		resp.Checks = append(resp.Checks, s)
 		total += s.Percentage * s.Weight
 		totalWeight += s.Weight
