@@ -19,6 +19,9 @@ HASH := $(shell which sha1sum || which shasum)
 # 连接url ： [mongodb:// ][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 MGO_URL := mongodb://ckeyer:X4etb83XtjlXz@u3.mj:27017/sloth
 
+init:
+	which gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter -i)
+
 local:
 	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
 	$(HASH) bundles/$(APP)
