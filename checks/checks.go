@@ -99,6 +99,14 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 		totalWeight += s.Weight
 		for _, fs := range s.FileSummaries {
 			issues[fs.Filename] = true
+
+			for _, ferr := range fs.Errors {
+				log.WithFields(log.Fields{
+					"filename": fs.Filename,
+					"file URL": fs.FileURL,
+					"line":     ferr.LineNumber,
+				}).Debug("RunChecks FileSummaries. ", ferr.ErrorString)
+			}
 		}
 	}
 	total /= totalWeight
@@ -106,6 +114,11 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 	// sort.Sort(ByWeight(resp.Checks))
 	resp.Average = total
 	resp.Issues = len(issues)
+
+	log.WithFields(log.Fields{
+		"issues": len(issues),
+		"total":  total,
+	}).Debug("RunChecks.")
 
 	return resp, nil
 }

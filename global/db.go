@@ -9,11 +9,12 @@ import (
 
 const (
 	// mgo.Collection.Name
-	ColUser     = "user"
-	ColProject  = "project"
-	ColWebhook  = "webhook"
-	ColUserAuth = "user_auth"
-	ColSettings = "settings"
+	ColUser      = "user"
+	ColProject   = "project"
+	ColWebhook   = "webhook"
+	ColUserAuth  = "user_auth"
+	ColSettings  = "settings"
+	ColCheckResp = "check_resp"
 )
 
 var (
@@ -25,13 +26,27 @@ func mgoIndexes() mongo.MgoIndexs {
 	return mongo.MgoIndexs{
 		ColUser: []mgo.Index{
 			mgo.Index{
-				Key:    []string{"name", "email", "phone"},
+				Key:    []string{"name"},
+				Unique: true,
+			},
+			mgo.Index{
+				Key:    []string{"email"},
+				Unique: true,
+			},
+			mgo.Index{
+				Key:    []string{"phone"},
 				Unique: true,
 			},
 		},
 		ColUserAuth: []mgo.Index{
 			mgo.Index{
-				Key: []string{"user_id", "lasted", "expired"},
+				Key: []string{"user_id"},
+			},
+			mgo.Index{
+				Key: []string{"lasted"},
+			},
+			mgo.Index{
+				Key: []string{"expired"},
 			},
 		},
 		ColProject: []mgo.Index{
@@ -47,6 +62,17 @@ func mgoIndexes() mongo.MgoIndexs {
 			mgo.Index{
 				Key:    []string{"key"},
 				Unique: true,
+			},
+		},
+		ColCheckResp: []mgo.Index{
+			mgo.Index{
+				Key: []string{"filename", "line"},
+			},
+			mgo.Index{
+				Key: []string{"project_id", "sha1", "commit_id"},
+			},
+			mgo.Index{
+				Key: []string{"created"},
 			},
 		},
 	}
