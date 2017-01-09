@@ -3,6 +3,8 @@ package checks
 import (
 	"fmt"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // GetDirAndFiles return dir, filenames, error
@@ -13,6 +15,10 @@ func GetDirAndFiles(args []string) (string, []string, error) {
 	for _, arg := range args {
 		fi, err := os.Stat(arg)
 		if err != nil {
+			log.WithFields(log.Fields{
+				"path":  arg,
+				"error": err,
+			}).Error("...")
 			return "", nil, err
 		}
 

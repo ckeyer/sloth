@@ -23,5 +23,5 @@ func (g GoVet) Percentage() (float64, []FileSummary, error) {
 
 // Description returns the description of go lint
 func (g GoVet) Description() string {
-	return `<code>go vet</code> examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string.`
+	return "go vet examines Go source code and reports suspicious constructs."
 }

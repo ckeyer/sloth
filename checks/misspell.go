@@ -23,5 +23,5 @@ func (g Misspell) Percentage() (float64, []FileSummary, error) {
 
 // Description returns the description of Misspell
 func (g Misspell) Description() string {
-	return `<a href="https://github.com/client9/misspell">Misspell</a> Finds commonly misspelled English words`
+	return "Misspell Finds commonly misspelled English words."
 }

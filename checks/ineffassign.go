@@ -23,5 +23,5 @@ func (g IneffAssign) Percentage() (float64, []FileSummary, error) {
 
 // Description returns the description of IneffAssign
 func (g IneffAssign) Description() string {
-	return `<a href="https://github.com/gordonklaus/ineffassign">IneffAssign</a> detects ineffectual assignments in Go code.`
+	return `IneffAssign detects ineffectual assignments in Go code.`
 }

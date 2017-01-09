@@ -23,5 +23,5 @@ func (c ErrCheck) Percentage() (float64, []FileSummary, error) {
 
 // Description returns the description of gofmt
 func (c ErrCheck) Description() string {
-	return `<a href="https://github.com/kisielk/errcheck">errcheck</a> finds unchecked errors in go programs`
+	return `errcheck finds unchecked errors in go programs`
 }

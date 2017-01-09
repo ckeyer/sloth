@@ -5,18 +5,29 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/gojp/goreportcard/check"
+	// "github.com/gojp/goreportcard/check"
 )
+
+// Check describes what methods various checks (gofmt, go lint, etc.)
+// should implement
+type Check interface {
+	Name() string
+	Description() string
+	Weight() float64
+	// Percentage returns the passing percentage of the check,
+	// as well as a map of filename to output
+	Percentage() (float64, []FileSummary, error)
+}
 
 type Grade string
 
 type score struct {
-	Name          string              `json:"name"`
-	Description   string              `json:"description"`
-	FileSummaries []check.FileSummary `json:"file_summaries"`
-	Weight        float64             `json:"weight"`
-	Percentage    float64             `json:"percentage"`
-	Error         string              `json:"error"`
+	Name          string        `json:"name"`
+	Description   string        `json:"description"`
+	FileSummaries []FileSummary `json:"file_summaries"`
+	Weight        float64       `json:"weight"`
+	Percentage    float64       `json:"percentage"`
+	Error         string        `json:"error"`
 }
 
 type checksResp struct {
@@ -35,24 +46,24 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 		return checksResp{}, fmt.Errorf("no .go files found")
 	}
 
-	checks := []check.Check{
-		check.GoFmt{Dir: dir, Filenames: filenames},
-		// check.GoVet{Dir: dir, Filenames: filenames},
-		check.GoLint{Dir: dir, Filenames: filenames},
-		// check.GoCyclo{Dir: dir, Filenames: filenames},
-		// check.License{Dir: dir, Filenames: []string{}},
-		// check.Misspell{Dir: dir, Filenames: filenames},
-		// check.IneffAssign{Dir: dir, Filenames: filenames},
-		// check.ErrCheck{Dir: dir, Filenames: filenames}, // disable errcheck for now, too slow and not finalized
+	checks := []Check{
+		GoFmt{Dir: dir, Filenames: filenames},
+		GoVet{Dir: dir, Filenames: filenames},
+		GoLint{Dir: dir, Filenames: filenames},
+		GoCyclo{Dir: dir, Filenames: filenames},
+		License{Dir: dir, Filenames: []string{}},
+		Misspell{Dir: dir, Filenames: filenames},
+		IneffAssign{Dir: dir, Filenames: filenames},
+		ErrCheck{Dir: dir, Filenames: filenames}, // disable errcheck for now, too slow and not finalized
 	}
 
 	ch := make(chan score)
 	for _, c := range checks {
-		go func(c check.Check) {
+		go func(c Check) {
 			p, summaries, err := c.Percentage()
 			errMsg := ""
 			if err != nil {
-				log.Errorf("ERROR: (%s) %v", c.Name(), err)
+				log.Errorf("RunChecks ERROR: (%s) %v", c.Name(), err)
 				errMsg = err.Error()
 			}
 			s := score{
@@ -79,12 +90,10 @@ func RunChecks(dir string, filenames []string) (checksResp, error) {
 	for i := 0; i < len(checks); i++ {
 		s := <-ch
 		log.WithFields(log.Fields{
-			"desc":       s.Description,
 			"name":       s.Name,
-			"error":      s.Error,
-			"weight":     s.Weight,
 			"percentage": s.Percentage,
-		}).Infof("%+v", s.FileSummaries)
+		}).Debugf("RunChecks.")
+
 		resp.Checks = append(resp.Checks, s)
 		total += s.Percentage * s.Weight
 		totalWeight += s.Weight

@@ -149,6 +149,10 @@ var (
 				return err
 			}
 
+			log.WithFields(log.Fields{
+				"dir":   dir,
+				"files": len(files),
+			}).Debug("start checks.")
 			checks.RunChecks(dir, files)
 			return nil
 		},
