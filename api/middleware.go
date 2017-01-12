@@ -17,9 +17,19 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// NotFound no router matched.
+func NotFound(rw http.ResponseWriter, req *http.Request) {
+	for _, pre := range []string{API_PREFIX, WEB_HOOKS} {
+		if strings.HasPrefix(req.URL.Path, pre) {
+			rw.WriteHeader(http.StatusNotFound)
+			return
+		}
+	}
+}
+
 // CorsHandle: set http response header
 func CorsHandle(ctx *gin.Context) {
-	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limt,Offset,Origin,Accept,X-Signature")
+	ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Limit,Offset,Origin,Accept,X-Signature")
 	ctx.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE")
 	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	ctx.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprint(24*time.Hour/time.Second))
@@ -81,7 +91,7 @@ func MWRequireLogin(ctx *gin.Context) {
 	ctx.Set(CtxKeyUserAuth, ua)
 }
 
-// 需要管理员权限，需要在使用 MWRequireLogin 之后
+// MWRequireAdmin 需要管理员权限，需要在使用 MWRequireLogin 之后
 func MWRequireAdmin(ctx *gin.Context) {
 	cua, ok := ctx.Get(CtxKeyUserAuth)
 	if !ok {
@@ -106,7 +116,7 @@ func MWRequireAdmin(ctx *gin.Context) {
 	ctx.Set(CtxKeyUser, u)
 }
 
-// MWAuthGithubServer
+// MWAuthGithubServer webhook的来源验证
 func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -128,7 +138,7 @@ func MWAuthGithubServer(rw http.ResponseWriter, req *http.Request) {
 	log.Debugf("github server auth passing")
 }
 
-// MWLoadGithubApp
+// MWLoadGithubApp 加载 Github App 配置
 func MWLoadGithubApp(ctx *gin.Context) {
 	db := ctx.MustGet(CtxKeyMgoDB).(*mgo.Database)
 	ghappK := &gh.App{
@@ -157,4 +167,29 @@ func MWLoadGithubApp(ctx *gin.Context) {
 		ClientSecret: sec,
 		CallbackURL:  callback,
 	})
+}
+
+// MWRequireGithubAuth 需要 github 账号的授权认证
+func MWRequireGithubCli(ctx *gin.Context) {
+	ut, ok := ctx.Get(CtxKeyUser)
+	if !ok {
+		log.Error("MWRequireGithubCli. middleware githubCli should before login.")
+		GinError(ctx, 500, "middleware githubCli should before login.")
+		return
+	}
+
+	u, ok := ut.(*admin.User)
+	if !ok {
+		log.Errorf("MWRequireGithubCli. got user failed %T.", ut)
+		GinError(ctx, 500, "got user failed.")
+		return
+	}
+	if u.GithubAccount == nil {
+		log.Errorf("user(%v) not bind github account.", u)
+		GinError(ctx, 404, "user not bind github account.")
+		return
+	}
+
+	cli := gh.NewClientByToken(u.GithubAccount.Login, string(u.GithubAccount.Token))
+	ctx.Set(CtxKeyGithubCli, cli)
 }

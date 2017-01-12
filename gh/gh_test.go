@@ -4,27 +4,21 @@ import (
 	"testing"
 
 	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
 	"gopkg.in/check.v1"
 )
 
 const (
-	ghToken = "34dea836bc3e282b43a2ba774fb6046bdcfc22b4"
+	ghToken = "9bb0bb6547ce5df09b2e6e435cff24ae1e329273"
 	ghUser  = "test-robot"
 )
 
-type ApiSuite struct {
-	ghCli *github.Client
+type GhSuite struct {
+	ghCli *Client
 }
 
 func init() {
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: ghToken},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-
-	check.Suite(&ApiSuite{
-		ghCli: github.NewClient(tc),
+	check.Suite(&GhSuite{
+		ghCli: NewClientByToken(ghUser, ghToken),
 	})
 }
 
@@ -32,24 +26,28 @@ func Test(t *testing.T) {
 	check.TestingT(t)
 }
 
-func (a *ApiSuite) TestMustString(c *check.C) {
-	str := "abc"
-	num := 123
-	var nilPtr *int
-	var nilStr *string
-	for k, v := range map[interface{}]string{
-		"":     "",
-		nil:    "",
-		nilPtr: "",
-		nilStr: "",
-		"a":    "a",
-		str:    "abc",
-		&str:   "abc",
-		num:    "123",
-		&num:   "123",
-	} {
-		if ret := mustString(k); v != ret {
-			c.Errorf("%#v should be: <%s>, but <%s>", k, v, ret)
-		}
+func (g *GhSuite) TestListGithubRepositories(c *check.C) {
+	opt := &github.RepositoryListOptions{
+		ListOptions: github.ListOptions{},
 	}
+	g.ghCli.Users.ListInvitations()
+	repos, resp, err := g.ghCli.Repositories.List(ghUser, opt)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	if resp.StatusCode > 300 {
+		c.Error(resp.Status)
+		return
+	}
+
+	c.Logf("repositories: %v", len(repos))
+
+	if len(repos) < 1 || len(repos) > 10 {
+		c.Errorf("repositories count failed. count: %v", len(repos))
+		return
+	}
+
+	c.Logf("repos 1: %+v", repos[0])
 }

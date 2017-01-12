@@ -55,7 +55,10 @@ func mgoIndexes() mongo.MgoIndexs {
 				Unique: true,
 			},
 			mgo.Index{
-				Key: []string{"type"},
+				Key: []string{"repos_name"},
+			},
+			mgo.Index{
+				Key: []string{"repos_id"},
 			},
 		},
 		ColSettings: []mgo.Index{

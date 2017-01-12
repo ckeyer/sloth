@@ -23,6 +23,7 @@ const (
 	CtxKeyUserAuth  = "userauth"
 	CtxKeyUser      = "user"
 	CtxKeyGithubApp = "githubapp"
+	CtxKeyGithubCli = "githubclient"
 )
 
 // Serve: main serve.
