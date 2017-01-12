@@ -32,6 +32,9 @@ func (g *GhSuite) TestListGithubRepositories(c *check.C) {
 	}
 	g.ghCli.Users.ListInvitations()
 	repos, resp, err := g.ghCli.Repositories.List(ghUser, opt)
+	if resp != nil && resp.StatusCode == 401 {
+		c.Skip("skip github client test. user token failed.")
+	}
 	if err != nil {
 		c.Error(err)
 		return
