@@ -11,7 +11,7 @@ import (
 )
 
 type Project struct {
-	types.Project
+	types.Project `json:",inline" bson:",inline"`
 
 	cli *Client
 }

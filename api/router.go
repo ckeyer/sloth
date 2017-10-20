@@ -11,7 +11,7 @@ func WebhookRouter(r *gin.RouterGroup) {
 
 func apiRouter(r *gin.RouterGroup) {
 	r.GET("/_ping", ping)
-	r.GET("/status", GetStatus)
+	r.GET("/status", GetStatus)r
 	r.POST("/login", Login)
 	r.POST("/signup", Registry)
 
