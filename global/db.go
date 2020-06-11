@@ -3,7 +3,7 @@ package global
 import (
 	"fmt"
 
-	"github.com/ckeyer/commons/db/mongo"
+	"github.com/ckeyer/sloth/utils/mongo"
 	"gopkg.in/mgo.v2"
 )
 

@@ -10,9 +10,9 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/ckeyer/commons/util"
 	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/types"
+	"github.com/ckeyer/sloth/utils"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -27,7 +27,7 @@ func NewUserAuth(uid bson.ObjectId, expired time.Time) *UserAuth {
 		UserID:  uid,
 		Created: time.Now(),
 		Lasted:  time.Now(),
-		Token:   util.RandomString(15),
+		Token:   utils.RandomString(15),
 		Expired: expired,
 	}
 }
