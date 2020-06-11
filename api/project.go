@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/ckeyer/sloth/pkgs/gh"
 	"github.com/ckeyer/sloth/global"

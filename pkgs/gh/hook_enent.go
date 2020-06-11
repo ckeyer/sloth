@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	libgithub "github.com/google/go-github/github"
 )
 

@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/ckeyer/sloth/api"
 	"github.com/ckeyer/sloth/api/views"
+	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/pkgs/checks"
 	"github.com/ckeyer/sloth/pkgs/docker"
-	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/version"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
 	_ "gopkg.in/check.v1"
-	"gopkg.in/urfave/cli.v2"
 )
 
 var (
@@ -124,8 +124,8 @@ var (
 			if err != nil {
 				return err
 			}
-			log.Info("connected mongodb successful.")
-			log.Info("server is running at ", addr)
+			logrus.Info("connected mongodb successful.")
+			logrus.Info("server is running at ", addr)
 			api.Serve(addr, db)
 			return nil
 		},
@@ -143,13 +143,13 @@ var (
 			return nil
 		},
 		Action: func(ctx *cli.Context) error {
-			log.Infof("args: %v", ctx.Args())
+			logrus.Infof("args: %v", ctx.Args())
 			dir, files, err := checks.GetDirAndFiles(ctx.Args().Slice())
 			if err != nil {
 				return err
 			}
 
-			log.WithFields(log.Fields{
+			logrus.WithFields(logrus.Fields{
 				"dir":   dir,
 				"files": len(files),
 			}).Debug("start checks.")
@@ -173,14 +173,14 @@ func main() {
 		},
 		Before: func(ctx *cli.Context) error {
 			/// init config model.
-			log.SetFormatter(&log.JSONFormatter{})
+			logrus.SetFormatter(&logrus.JSONFormatter{})
 			if debug {
 				gin.SetMode(gin.DebugMode)
-				log.SetLevel(log.DebugLevel)
-				log.Debug("server is running at debug model.")
+				logrus.SetLevel(logrus.DebugLevel)
+				logrus.Debug("server is running at debug model.")
 			} else {
 				gin.SetMode(gin.ReleaseMode)
-				log.SetLevel(log.InfoLevel)
+				logrus.SetLevel(logrus.InfoLevel)
 			}
 
 			return nil

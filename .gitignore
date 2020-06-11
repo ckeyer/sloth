@@ -30,3 +30,4 @@ _cgo_export.*
 *.prof
 bundles
 Godeps
+go.sum

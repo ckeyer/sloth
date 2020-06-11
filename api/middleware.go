@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/ckeyer/sloth/pkgs/gh"
 	"github.com/gin-gonic/gin"

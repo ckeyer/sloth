@@ -3,7 +3,7 @@ package docker
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	dockerpkg "github.com/fsouza/go-dockerclient"
 )
 

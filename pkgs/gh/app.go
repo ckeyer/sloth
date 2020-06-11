@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/types"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"

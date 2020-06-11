@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/types"
 	"github.com/ckeyer/sloth/utils"
