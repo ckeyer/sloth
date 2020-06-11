@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/ckeyer/sloth/api/views"
 	"github.com/ckeyer/sloth/version"
-	"github.com/ckeyer/sloth/views"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"

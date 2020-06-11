@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ckeyer/sloth/admin"
+	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"

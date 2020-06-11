@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/ckeyer/sloth/admin"
+	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 )

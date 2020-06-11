@@ -26,7 +26,7 @@ gorun:
 	go run -ldflags="$(LD_FLAGS)" cli/main.go
 
 local:
-	go build -a -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
+	go build -v -ldflags="$(LD_FLAGS)" -o bundles/$(APP) cli/main.go
 	$(HASH) bundles/$(APP)
 
 test:
