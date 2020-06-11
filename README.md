@@ -2,7 +2,7 @@
 
 ![](./sloth.jpg)
 
-帮助`golang`程序实现Review，CI的`github`小应用。
+帮助`gopher`实现Review，CI的工具应用。
 
 [![Build Status](https://travis-ci.org/ckeyer/sloth.png?branch=master)](https://travis-ci.org/ckeyer/sloth)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ckeyer/sloth)](https://goreportcard.com/report/github.com/ckeyer/sloth)
