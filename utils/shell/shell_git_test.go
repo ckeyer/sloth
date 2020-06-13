@@ -6,5 +6,5 @@ import (
 
 func Test(t *testing.T) {
 	git := new(ShellGit)
-	git.Clone("ckeyer/t", "master")
+	git.Clone("ckeyer/sloth", "master")
 }
