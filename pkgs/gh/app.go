@@ -1,14 +1,15 @@
 package gh
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/types"
 	"github.com/google/go-github/github"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -97,13 +98,13 @@ func (a *App) GetUserAccount(token string) (*types.GithubAccount, error) {
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
 	client := github.NewClient(tc)
-	user, _, err := client.Users.Get("")
+	user, _, err := client.Users.Get(context.Background(), "")
 	if err != nil {
 		log.Errorf("GetUserAccount: %s", err)
 		return nil, err
 	}
 	return &types.GithubAccount{
-		ID:       *user.ID,
+		ID:       int(*user.ID),
 		Login:    mustString(user.Login),
 		Name:     mustString(user.Name),
 		Email:    mustString(user.Email),

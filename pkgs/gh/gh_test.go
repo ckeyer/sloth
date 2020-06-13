@@ -1,6 +1,7 @@
 package gh
 
 import (
+	"context"
 	"io"
 	"io/ioutil"
 	"os"
@@ -50,8 +51,8 @@ func (g *GhSuite) TestListGithubRepositories(c *check.C) {
 	opt := &github.RepositoryListOptions{
 		ListOptions: github.ListOptions{},
 	}
-	g.ghCli.Users.ListInvitations()
-	repos, resp, err := g.ghCli.Repositories.List(ghUser, opt)
+	g.ghCli.Users.ListInvitations(context.Background(), nil)
+	repos, resp, err := g.ghCli.Repositories.List(context.Background(), ghUser, opt)
 
 	if err != nil {
 		c.Error(err)
@@ -79,7 +80,7 @@ func (g *GhSuite) TestListGithubRepositories(c *check.C) {
 func (g *GhSuite) TestCommitPatch(c *check.C) {
 	g.checkSkip(c)
 
-	rc, resp, err := g.ghCli.Repositories.GetCommit(ghUser, ghRepos, ghSHA)
+	rc, resp, err := g.ghCli.Repositories.GetCommit(context.Background(), ghUser, ghRepos, ghSHA)
 	if err != nil {
 		c.Error(err)
 		if resp != nil {

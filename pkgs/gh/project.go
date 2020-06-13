@@ -2,6 +2,7 @@ package gh
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -21,7 +22,7 @@ type CommitPatch types.CommitPatch
 type FilePatch types.FilePatch
 
 func (p *Project) GetCommitPatch(sha string) (*CommitPatch, []*FilePatch, error) {
-	rc, resp, err := p.cli.Repositories.GetCommit(p.Owner, p.ReposName, sha)
+	rc, resp, err := p.cli.Repositories.GetCommit(context.Background(), p.Owner, p.ReposName, sha)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -33,7 +34,7 @@ func (p *Project) GetCommitPatch(sha string) (*CommitPatch, []*FilePatch, error)
 		ProjectID: p.ID,
 		SHA:       mustString(rc.SHA),
 		Author:    mustString(rc.Author.Login),
-		Message:   mustString(rc.Message),
+		Message:   mustString(rc.Commit.Message),
 	}
 	fps := []*FilePatch{}
 
