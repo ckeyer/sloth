@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/ckeyer/sloth/global"
 	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/ckeyer/sloth/pkgs/gh"
-	"github.com/ckeyer/sloth/global"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

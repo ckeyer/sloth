@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/pkgs/admin"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 )
 

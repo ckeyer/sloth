@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/ckeyer/sloth/api/views"
 	"github.com/ckeyer/sloth/version"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 )
 

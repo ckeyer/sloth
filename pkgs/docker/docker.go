@@ -3,8 +3,8 @@ package docker
 import (
 	"fmt"
 
-	log "github.com/sirupsen/logrus"
 	dockerpkg "github.com/fsouza/go-dockerclient"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
