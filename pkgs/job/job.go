@@ -20,7 +20,7 @@ type JobManager interface {
 // Status:
 type Status struct {
 	Status    string    `json:"status"`
-	Err       string    `json:"status,omitempty"`
+	Err       string    `json:"err,omitempty"`
 	Out       []byte    `json:"out"`
 	StartTime time.Time `json:"start_time"`
 	OverTime  time.Time `json:"over_time"`
