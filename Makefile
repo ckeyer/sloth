@@ -21,6 +21,14 @@ MGO_URL := mongodb://ckeyer:X4etb83XtjlXz@u3.mj:27017/sloth
 
 init:
 	which gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter -i)
+	sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texi2html zlib1g-dev
+	sudo apt install -y libavdevice-dev libavfilter-dev libswscale-dev libavcodec-dev libavformat-dev libswresample-dev libavutil-dev
+	sudo apt-get install yasm
+	export FFMPEG_ROOT=$HOME/ffmpeg
+	export CGO_LDFLAGS="-L$FFMPEG_ROOT/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lavdevice -lavfilter"
+	export CGO_CFLAGS="-I$FFMPEG_ROOT/include"
+	export LD_LIBRARY_PATH=$HOME/ffmpeg/lib
+
 
 gorun:
 	go run -ldflags="$(LD_FLAGS)" cli/main.go

@@ -7,6 +7,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.6.5
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
 	github.com/gin-gonic/gin v1.6.3
+	github.com/giorgisio/goav v0.1.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/sessions v1.2.0 // indirect
